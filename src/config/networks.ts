@@ -26,10 +26,12 @@ export const STELLAR: Record<StellarEnv, StellarNetworkConfig> = {
     env: 'mainnet',
     label: 'Stellar Mainnet',
     passphrase: 'Public Global Stellar Network ; September 2015',
+    // Order matters: the first entry takes the load. All three are CORS-open; sorobanrpc.com
+    // was observed rejecting browser bursts of simulateTransaction, so it is the last resort.
     rpcUrls: [
-      'https://mainnet.sorobanrpc.com',
-      'https://soroban-rpc.mainnet.stellar.gateway.fm',
       'https://rpc.lightsail.network',
+      'https://soroban-rpc.mainnet.stellar.gateway.fm',
+      'https://mainnet.sorobanrpc.com',
     ],
     horizonUrl: 'https://horizon.stellar.org',
     explorer: 'https://stellar.expert/explorer/public',

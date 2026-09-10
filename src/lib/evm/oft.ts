@@ -51,20 +51,33 @@ export async function evmSend(wallet: WalletClient, oft: Address, p: EvmSendPara
 }
 // snippet:end evmQuoteSend
 
-export async function evmOftFacts(client: PublicClient, oft: Address) {
-  const read = <T,>(functionName: 'peers' | 'sharedDecimals' | 'decimals' | 'symbol' | 'name' | 'owner' | 'endpoint' | 'approvalRequired' | 'token' | 'totalSupply', args?: readonly unknown[]) =>
-    client.readContract({ address: oft, abi: OFT_ABI, functionName, args } as never) as Promise<T>;
-  const [sharedDecimals, decimals, symbol, name, owner, endpoint, approvalRequired, token] = await Promise.all([
-    read<number>('sharedDecimals'),
-    read<number>('decimals'),
-    read<string>('symbol'),
-    read<string>('name'),
-    read<Address>('owner'),
-    read<Address>('endpoint'),
-    read<boolean>('approvalRequired').catch(() => false),
-    read<Address>('token'),
+/** OApp-level facts every LayerZero EVM OApp exposes. */
+export async function evmOAppFacts(client: PublicClient, oapp: Address) {
+  const [owner, endpoint] = await Promise.all([
+    client.readContract({ address: oapp, abi: OFT_ABI, functionName: 'owner' }),
+    client.readContract({ address: oapp, abi: OFT_ABI, functionName: 'endpoint' }),
   ]);
-  return { sharedDecimals, decimals, symbol, name, owner, endpoint, approvalRequired, token };
+  return { owner, endpoint };
+}
+
+/** OFT-core facts. An OFT *Adapter* has these but is not itself an ERC20 (no name/symbol/decimals). */
+export async function evmOftCoreFacts(client: PublicClient, oft: Address) {
+  const [token, sharedDecimals, approvalRequired] = await Promise.all([
+    client.readContract({ address: oft, abi: OFT_ABI, functionName: 'token' }),
+    client.readContract({ address: oft, abi: OFT_ABI, functionName: 'sharedDecimals' }),
+    client.readContract({ address: oft, abi: OFT_ABI, functionName: 'approvalRequired' }).catch(() => false),
+  ]);
+  return { token, sharedDecimals: Number(sharedDecimals), approvalRequired };
+}
+
+/** ERC20 metadata (only for plain OFTs, where the OFT contract *is* the token). */
+export async function evmErc20Facts(client: PublicClient, token: Address) {
+  const [name, symbol, decimals] = await Promise.all([
+    client.readContract({ address: token, abi: OFT_ABI, functionName: 'name' }),
+    client.readContract({ address: token, abi: OFT_ABI, functionName: 'symbol' }),
+    client.readContract({ address: token, abi: OFT_ABI, functionName: 'decimals' }),
+  ]);
+  return { name, symbol, decimals: Number(decimals) };
 }
 
 export async function evmPeer(client: PublicClient, oft: Address, eid: number): Promise<Hex> {
