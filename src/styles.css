@@ -84,3 +84,7 @@ pre { margin: 0; }
 .pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
 @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
 .skeleton { background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 37%, var(--surface-2) 63%); background-size: 800px 100%; animation: shimmer 1.4s infinite linear; }
+
+/* Data-viz series colour (single-hue magnitude charts); dark/light steps from the validated reference palette. */
+:root { --series-1: #3987e5; --series-2: #d95926; }
+[data-theme='light'] { --series-1: #2a78d6; --series-2: #eb6834; }

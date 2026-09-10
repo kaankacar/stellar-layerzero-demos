@@ -12,7 +12,7 @@ export function LifecycleDiagram({ dvnCount = 3 }: { dvnCount?: number }) {
       <text x={55} y={101} textAnchor="middle" className="fill-text text-[11px] font-semibold">Source chain</text>
       <text x={55} y={116} textAnchor="middle" className="fill-muted text-[9px]">OApp → Endpoint.send</text>
       {lanes.map((i) => {
-        const y = 30 + i * (150 / Math.max(1, dvnCount - 1 || 1));
+        const y = 25 + i * 55;
         return (
           <g key={i}>
             <line x1={100} y1={105} x2={170} y2={y + 15} className="stroke-muted" strokeWidth={1} markerEnd="url(#arr2)" />

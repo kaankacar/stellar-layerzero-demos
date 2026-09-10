@@ -19,7 +19,7 @@ const expectations: Record<string, string[]> = {
   '/': ['LayerZero V2 on Stellar', 'Registry check'],
   '/inspector': ['USDT0 Inspector', 'Holders', 'Required DVNs'],
   '/tracker': ['Bridge Message Tracker'],
-  '/quotes': ['Fee & Quote Explorer'],
+  '/quotes': ['Fee & Quote Explorer', 'What arrives', 'native_fee'],
   '/what-is-an-oft': ['What is an OFT?'],
   '/playground': ['Testnet OFT Playground'],
   '/postcards': ['Cross-Chain Postcards'],
@@ -51,7 +51,7 @@ try {
     const lower = text.toLowerCase();
     const missing = (expectations[route] ?? []).filter((s) => !lower.includes(s.toLowerCase()));
     const unavailable = (text.match(/live data unavailable/g) ?? []).length;
-    const file = `docs/screenshots/${route === '/' ? 'home' : route.slice(1)}.png`;
+    const file = `docs/screenshots/${route === '/' ? 'home' : route.slice(1).replace(/[^a-z0-9-]+/gi, '_').slice(0, 60)}.png`;
     await page.screenshot({ path: resolve(import.meta.dirname, '..', file), fullPage: true });
     // RPC failover noise: a public RPC refusing one request is expected and handled by withRpc().
     const noise = errors.filter((e) => /Access to fetch at 'https:\/\/(rpc\.lightsail|soroban-rpc|mainnet\.sorobanrpc|soroban-testnet)|Failed to load resource: net::ERR_FAILED/.test(e));
