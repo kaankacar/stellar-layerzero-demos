@@ -1,0 +1,86 @@
+@import 'tailwindcss';
+
+/* Design tokens. Dark is the default; [data-theme="light"] flips them. */
+:root {
+  --bg: #0b0f14;
+  --surface: #121821;
+  --surface-2: #1a2230;
+  --border: #263241;
+  --text: #e6edf3;
+  --muted: #8b9bb0;
+  --accent: #7aa2ff;
+  --accent-strong: #4f7cff;
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --danger: #f87171;
+  --mainnet: #f59e0b;
+  --testnet: #10b981;
+  --code-bg: #0d1218;
+  color-scheme: dark;
+}
+[data-theme='light'] {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #eef1f5;
+  --border: #d7dde5;
+  --text: #0f172a;
+  --muted: #526071;
+  --accent: #2f5fe0;
+  --accent-strong: #1d47c2;
+  --ok: #059669;
+  --warn: #b45309;
+  --danger: #dc2626;
+  --mainnet: #b45309;
+  --testnet: #047857;
+  --code-bg: #f0f3f7;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-mainnet: var(--mainnet);
+  --color-testnet: var(--testnet);
+  --color-code-bg: var(--code-bg);
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+html, body, #root { min-height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+code, pre, .mono { font-family: var(--font-mono); }
+pre { margin: 0; }
+[hidden] { display: none !important; }
+
+.card { @apply rounded-xl border border-border bg-surface; }
+.btn { @apply inline-flex items-center gap-2 rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-sm font-medium text-text transition hover:border-accent disabled:cursor-not-allowed disabled:opacity-50; }
+.btn-primary { @apply border-transparent bg-accent-strong text-white hover:bg-accent; }
+.input { @apply w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm text-text outline-none placeholder:text-muted focus:border-accent; }
+.pill { @apply inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold; }
+.kbd { @apply rounded border border-border bg-surface-2 px-1 py-0.5 font-mono text-[11px]; }
+.prose-demo p { @apply mb-3 leading-relaxed text-text; }
+.prose-demo ul { @apply mb-3 list-disc pl-5 leading-relaxed; }
+.prose-demo li { @apply mb-1; }
+.prose-demo code { @apply rounded bg-code-bg px-1 py-0.5 text-[0.85em]; }
+.prose-demo strong { @apply text-text; }
+
+@keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+.pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
+@keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+.skeleton { background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 37%, var(--surface-2) 63%); background-size: 800px 100%; animation: shimmer 1.4s infinite linear; }

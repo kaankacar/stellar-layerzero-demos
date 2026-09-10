@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+.lz-monorepo/
+.vendor/
+target/
+*.log
+.DS_Store
+scripts/.state/
