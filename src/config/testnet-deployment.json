@@ -1,0 +1,48 @@
+{
+  "deployedAt": "2026-09-10T19:58:48.020Z",
+  "registry": {
+    "endpoint": "CALTBA5S6GRJEHAXFP45LGGLKWWAF7HTZCPNUBUJF2HWWRRLQNV35AIV",
+    "uln": "CCMLPCAWCPIIMXOHJJKU3NZLOFTT2O6QTB2UUFPN6SEHLK35QRHVKKMB",
+    "activeDvn": "CB7EWGPRGD3R3CD2DIYIVXMOEFDINVBGBFFQLFMEMXFWJFJIMHA7ZLSA",
+    "activeDvnHex": "0x7e4b19f130f71d887a1a308add8e214686d426094b05958465cb64952861c1fc",
+    "fetchedAt": "2026-09-10T19:58:47.750Z"
+  },
+  "wasm": {
+    "monorepoCommit": "b013ffe",
+    "files": {
+      "faucet.wasm": {
+        "sha256": "f45764c5d52baa6aebb2a31972761b6f7e5ab4f12678d94236461b33ebf1b7bc",
+        "bytes": 3727
+      },
+      "oft.wasm": {
+        "sha256": "2b49f7251f19467c3c45dc840a8b06acdb2cd87ff8a130726daf51fb18884959",
+        "bytes": 121226
+      },
+      "postcard_oapp.wasm": {
+        "sha256": "86bc6be94c92afbdbe1fcab6926519710a41bd49f037bd454b6ae43501cefec7",
+        "bytes": 48228
+      },
+      "sac_manager.wasm": {
+        "sha256": "745836666ad905700078d1cdfb4e2be9c508db9c6d6ca46b7c6479a82063c599",
+        "bytes": 39171
+      }
+    }
+  },
+  "stellar": {
+    "eid": 40600,
+    "network": "testnet",
+    "deployer": "GAD6SUCGUTTLNZC3KQZXCV5KRHKHZI3TZMNOQD6J3YWI3S46YMVSGKPA",
+    "issuer": "GB3QCH2JLGYMYNCTVC45LSKGMCRQOEVF46IUQAEWW67JOMHW63ZMAFEJ",
+    "assetCode": "tUSDT0",
+    "sac": "CCM64LC7ZB426DRO7MNDDQYL3ATYPIISRJX6B7SUTTEJCCZF2BXN2XLT",
+    "sacManager": "CBDTSASNBUEAUBJVZL5TCSWNL7GMJ63MFFGJZNPVFAJMHHLELZ73BGM2",
+    "oft": "CB4M3EC45CYVUYHRUY6T3UYBCM3E5JVA7SQF5OTIQY2IR3KHL3RT42GE",
+    "oftHex": "0x78cd905ce8b15a60f1a63d3dd30113364ea6a0fca05eba68863488ed475ee33e",
+    "faucet": "CBFDW3L2CG7RUANKFSLGIOREVMXLW52EKLARBSIVGVP424LMNRNHLPUS",
+    "postcard": "CA3ENHJE57OE4NIUWRMCGA3NJ355NV2YPX6CMIVIUQZG77KZBA7EIFPX",
+    "postcardHex": "0x36469d24efdc4e3514b45823036d4efbd6d7587dfc2622a8a4326ffd59083e44",
+    "issuerLocked": true
+  },
+  "evm": null,
+  "wiring": null
+}

@@ -20,7 +20,7 @@ const expectations: Record<string, string[]> = {
   '/inspector': ['USDT0 Inspector', 'Holders', 'Required DVNs'],
   '/tracker': ['Bridge Message Tracker'],
   '/quotes': ['Fee & Quote Explorer', 'What arrives', 'native_fee'],
-  '/what-is-an-oft': ['What is an OFT?'],
+  '/what-is-an-oft': ['What is an OFT?', 'Shared decimals and dust', 'Check your understanding'],
   '/playground': ['Testnet OFT Playground'],
   '/postcards': ['Cross-Chain Postcards'],
   '/dashboard': ['Omnichain Dashboard'],
@@ -47,6 +47,16 @@ try {
     // give slow RPC-backed sections a moment, then wait for network idle again
     await new Promise((r) => setTimeout(r, 4000));
     await page.waitForNetworkIdle({ idleTime: 1500, timeout: 60_000 }).catch(() => undefined);
+    // Scroll through the page so scroll-revealed sections animate in before the screenshot.
+    await page.evaluate(async () => {
+      const step = 600;
+      for (let y = 0; y < document.body.scrollHeight; y += step) {
+        window.scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 120));
+      }
+      window.scrollTo(0, 0);
+    });
+    await new Promise((r) => setTimeout(r, 800));
     const text = await page.evaluate(() => document.body.innerText);
     const lower = text.toLowerCase();
     const missing = (expectations[route] ?? []).filter((s) => !lower.includes(s.toLowerCase()));

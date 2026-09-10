@@ -10,3 +10,4 @@ target/
 *.log
 .DS_Store
 scripts/.state/
+.lz-build/

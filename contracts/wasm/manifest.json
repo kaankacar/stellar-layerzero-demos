@@ -1,0 +1,25 @@
+{
+  "builtAt": "2026-09-10T19:54:42.273747+00:00",
+  "monorepoCommit": "b013ffe",
+  "rustToolchain": "1.90.0",
+  "target": "wasm32v1-none",
+  "sorobanSdk": "25.1.1",
+  "files": {
+    "faucet.wasm": {
+      "sha256": "f45764c5d52baa6aebb2a31972761b6f7e5ab4f12678d94236461b33ebf1b7bc",
+      "bytes": 3727
+    },
+    "oft.wasm": {
+      "sha256": "2b49f7251f19467c3c45dc840a8b06acdb2cd87ff8a130726daf51fb18884959",
+      "bytes": 121226
+    },
+    "postcard_oapp.wasm": {
+      "sha256": "86bc6be94c92afbdbe1fcab6926519710a41bd49f037bd454b6ae43501cefec7",
+      "bytes": 48228
+    },
+    "sac_manager.wasm": {
+      "sha256": "745836666ad905700078d1cdfb4e2be9c508db9c6d6ca46b7c6479a82063c599",
+      "bytes": 39171
+    }
+  }
+}
