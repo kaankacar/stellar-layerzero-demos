@@ -34,8 +34,9 @@ export async function getTransferChains(): Promise<TransferChain[]> {
   return res.chains;
 }
 export async function getTransferTokens(chainKey?: string): Promise<TransferToken[]> {
+  // The API accepts ?chainKey but (as of 2026-09) returns the full list anyway, so filter client-side.
   const res = await fetchJson<{ tokens: TransferToken[] }>(`${TRANSFER_API}/tokens${chainKey ? `?chainKey=${encodeURIComponent(chainKey)}` : ''}`);
-  return res.tokens;
+  return chainKey ? res.tokens.filter((t) => t.chainKey === chainKey) : res.tokens;
 }
 // snippet:end transferApiPublic
 
