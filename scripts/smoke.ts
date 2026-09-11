@@ -27,9 +27,11 @@ const expectations: Record<string, string[]> = {
   '/dashboard': ['Omnichain Dashboard'],
 };
 
-const server = await createServer({ configFile: resolve(import.meta.dirname, '../vite.config.ts'), server: { port: 5199, strictPort: true }, logLevel: 'silent' });
-await server.listen();
-const base = 'http://localhost:5199';
+// SMOKE_BASE_URL=https://user.github.io/repo runs the same checks against a deployed site.
+const external = process.env.SMOKE_BASE_URL?.replace(/\/$/, '');
+const server = external ? null : await createServer({ configFile: resolve(import.meta.dirname, '../vite.config.ts'), server: { port: 5199, strictPort: true }, logLevel: 'silent' });
+if (server) await server.listen();
+const base = external ?? 'http://localhost:5199';
 mkdirSync(resolve(import.meta.dirname, '../docs/screenshots'), { recursive: true });
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox', '--window-size=1400,1000'] });
@@ -77,6 +79,6 @@ try {
   }
 } finally {
   await browser.close();
-  await server.close();
+  if (server) await server.close();
 }
 process.exit(failures ? 1 : 0);

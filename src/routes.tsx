@@ -38,10 +38,14 @@ export const DEMOS: DemoRoute[] = [
   { path: '/dashboard', title: 'Omnichain Dashboard', short: 'Dashboard', mode: 'mainnet-readonly', emoji: '📊', blurb: 'Recent USDT0 traffic in and out of Stellar, wired peers, supply, and a live ticker of delivered messages.', element: wrap(<DashboardPage />) },
 ];
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Shell />,
-    children: [{ index: true, element: <HomePage /> }, ...DEMOS.map((d) => ({ path: d.path.slice(1), element: d.element }))],
-  },
-]);
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Shell />,
+      children: [{ index: true, element: <HomePage /> }, ...DEMOS.map((d) => ({ path: d.path.slice(1), element: d.element }))],
+    },
+  ],
+  // Vite's BASE_URL is '/' locally and '/<repo>/' on GitHub Pages.
+  { basename: import.meta.env.BASE_URL.replace(/\/$/, '') },
+);
