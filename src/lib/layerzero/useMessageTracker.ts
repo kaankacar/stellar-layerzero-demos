@@ -3,6 +3,9 @@ import type { ScanEnv } from '@/config/networks';
 import { classifyLookup, getMessageByGuid, getMessagesByTx, getMessagesByWallet, type ScanMessage } from '@/lib/layerzero/scan';
 import { errorMessage, HttpError } from '@/lib/net/fetchJson';
 import { findPacketSent } from '@/lib/stellar/packetEvents';
+import { findPacketSentEvm } from '@/lib/stellar/deliver';
+import { publicClient } from '@/lib/evm/clients';
+import { EVM_TESTNETS } from '@/config/networks';
 
 export const TERMINAL: ReadonlySet<string> = new Set(['DELIVERED', 'FAILED', 'BLOCKED', 'APPLICATION_BURNED', 'APPLICATION_SKIPPED', 'UNRESOLVABLE_COMMAND', 'MALFORMED_COMMAND']);
 
@@ -24,8 +27,20 @@ export async function lookupMessages(env: ScanEnv, input: string): Promise<ScanM
     return await getMessagesByTx(env, q.value);
   } catch (e) {
     if (!(e instanceof HttpError && e.status === 404)) throw e;
-    // A 0x-prefixed 32-byte value may be a GUID rather than a tx hash.
-    if (q.value.startsWith('0x')) return getMessageByGuid(env, q.value);
+    if (q.value.startsWith('0x')) {
+      // A 0x-prefixed 32-byte value may be a GUID rather than a tx hash…
+      try {
+        return await getMessageByGuid(env, q.value);
+      } catch (e2) {
+        if (!(e2 instanceof HttpError && e2.status === 404) || env !== 'testnet') throw e2;
+        // …or an EVM-testnet tx Scan has not indexed yet: read its PacketSent event and look the GUID up.
+        for (const chain of Object.values(EVM_TESTNETS)) {
+          const packet = await findPacketSentEvm(publicClient(chain.key), q.value as `0x${string}`).catch(() => null);
+          if (packet) return getMessageByGuid(env, packet.guid);
+        }
+        throw e2;
+      }
+    }
     // A Stellar tx hash: Scan may not have linked it yet, but the GUID is on-chain in the packet_sent event.
     const packet = await findPacketSent(env, q.value).catch(() => null);
     if (packet) return getMessageByGuid(env, packet.guid);

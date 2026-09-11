@@ -66,7 +66,7 @@ try {
     const file = `docs/screenshots/${route === '/' ? 'home' : route.slice(1).replace(/[^a-z0-9-]+/gi, '_').slice(0, 60)}.png`;
     await page.screenshot({ path: resolve(import.meta.dirname, '..', file), fullPage: true });
     // RPC failover noise: a public RPC refusing one request is expected and handled by withRpc().
-    const noise = errors.filter((e) => /Access to fetch at 'https:\/\/(rpc\.lightsail|soroban-rpc|mainnet\.sorobanrpc|soroban-testnet)|Failed to load resource: net::ERR_FAILED/.test(e));
+    const noise = errors.filter((e) => /Access to fetch at 'https:\/\/(rpc\.lightsail|soroban-rpc|mainnet\.sorobanrpc|soroban-testnet)|Failed to load resource: net::ERR_FAILED|Failed to load resource: the server responded with a status of 404/.test(e));
     const hard = errors.filter((e) => !noise.includes(e));
     const ok = missing.length === 0 && hard.length === 0;
     if (!ok) failures += 1;
