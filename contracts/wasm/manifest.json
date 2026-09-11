@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-09-10T19:54:42.273747+00:00",
+  "builtAt": "2026-09-11T14:39:35.060869+00:00",
   "monorepoCommit": "b013ffe",
   "rustToolchain": "1.90.0",
   "target": "wasm32v1-none",
@@ -14,8 +14,8 @@
       "bytes": 121226
     },
     "postcard_oapp.wasm": {
-      "sha256": "86bc6be94c92afbdbe1fcab6926519710a41bd49f037bd454b6ae43501cefec7",
-      "bytes": 48228
+      "sha256": "1628a2dbfd9ee1ddbab7e7a4f4c5e7388d3bc632cc20d5d88f66ba53d664bb89",
+      "bytes": 48433
     },
     "sac_manager.wasm": {
       "sha256": "745836666ad905700078d1cdfb4e2be9c508db9c6d6ca46b7c6479a82063c599",

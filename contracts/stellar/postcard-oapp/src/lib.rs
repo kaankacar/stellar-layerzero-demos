@@ -13,6 +13,7 @@ use common_macros::{contract_impl, lz_contract};
 use endpoint_v2::{MessagingFee, Origin};
 use oapp::{
     oapp_core::{init_ownable_oapp, OAppCore},
+    oapp_options_type3::OAppOptionsType3,
     oapp_receiver::{LzReceiveInternal, OAppReceiver},
     oapp_sender::{FeePayer, OAppSenderInternal},
 };
@@ -20,6 +21,8 @@ use oapp_macros::oapp;
 use soroban_sdk::{contracterror, contracttype, panic_with_error, symbol_short, Address, Bytes, BytesN, Env, Vec};
 
 pub const MAX_TEXT_LEN: u32 = 140;
+/// Message type used for enforced options (1 = SEND, like OFTs).
+pub const SEND_MSG_TYPE: u32 = 1;
 pub const MAX_POSTCARDS: u32 = 50;
 
 #[contracterror]
@@ -63,10 +66,12 @@ impl PostcardOApp {
         init_ownable_oapp::<Self>(env, owner, endpoint, delegate);
     }
 
-    /// Price a postcard to `dst_eid`. Options must be type-3 (the enforced options are appended by the OApp).
+    /// Price a postcard to `dst_eid`. `options` may be empty: the OApp prepends its enforced options
+    /// (ULN302 rejects an empty options blob, which is exactly what enforced options are for).
     pub fn quote_postcard(env: &Env, dst_eid: u32, text: &Bytes, options: &Bytes, pay_in_zro: bool) -> MessagingFee {
         Self::check_text(env, text);
-        Self::__quote(env, dst_eid, text, options, pay_in_zro)
+        let options = Self::combine_options(env, dst_eid, SEND_MSG_TYPE, options);
+        Self::__quote(env, dst_eid, text, &options, pay_in_zro)
     }
 
     // snippet:start sendPostcardRust
@@ -74,8 +79,9 @@ impl PostcardOApp {
     pub fn send_postcard(env: &Env, caller: &Address, dst_eid: u32, text: &Bytes, options: &Bytes, fee: &MessagingFee) -> BytesN<32> {
         caller.require_auth();
         Self::check_text(env, text);
+        let options = Self::combine_options(env, dst_eid, SEND_MSG_TYPE, options);
         // FeePayer::Verified: we already called require_auth, so the send path must not ask again.
-        let receipt = Self::__lz_send(env, dst_eid, text, options, &FeePayer::Verified(caller.clone()), fee, caller);
+        let receipt = Self::__lz_send(env, dst_eid, text, &options, &FeePayer::Verified(caller.clone()), fee, caller);
         let sent: u64 = env.storage().instance().get(&DataKey::Sent).unwrap_or(0);
         env.storage().instance().set(&DataKey::Sent, &(sent + 1));
         env.events().publish((symbol_short!("pc_sent"), dst_eid, caller.clone()), (receipt.guid.clone(), text.clone()));

@@ -87,7 +87,9 @@ pnpm deploy:testnet --evm          # TestOFT + PostcardOApp on Sepolia, setPeer(
                                    #   set_peer, set_enforced_options, endpoint.set_config (send + receive ULN naming the active DVN)
 pnpm e2e:testnet                   # script-signed proof: faucet drip → tUSDT0 Stellar → Sepolia + a postcard, tracked to DELIVERED
 pnpm e2e:testnet --reverse         # Sepolia → Stellar
+pnpm e2e:testnet --postcard        # only a postcard Stellar → Sepolia
 pnpm e2e:testnet --track <tx>      # follow an existing message without sending
+pnpm exec tsx --tsconfig tsconfig.node.json scripts/e2e-launchpad.ts CODE LockUnlock   # replay the Launchpad flow with script keys, end to end
 pnpm exec tsx --tsconfig tsconfig.node.json scripts/execute-sepolia.ts <stellar tx>   # deliver a verified message yourself
 ```
 
@@ -102,13 +104,17 @@ pnpm exec tsx --tsconfig tsconfig.node.json scripts/execute-sepolia.ts <stellar 
 | SAC-manager (SAC admin) | `CBDTSASNBUEAUBJVZL5TCSWNL7GMJ63MFFGJZNPVFAJMHHLELZ73BGM2` |
 | OFT (`MintBurn`) | `CB4M3EC45CYVUYHRUY6T3UYBCM3E5JVA7SQF5OTIQY2IR3KHL3RT42GE` |
 | Faucet (1,000 tUSDT0 per drip, ~1 h cooldown) | `CBFDW3L2CG7RUANKFSLGIOREVMXLW52EKLARBSIVGVP424LMNRNHLPUS` |
-| PostcardOApp (Stellar) | `CA3ENHJE57OE4NIUWRMCGA3NJ355NV2YPX6CMIVIUQZG77KZBA7EIFPX` |
+| PostcardOApp (Stellar) | `CCGXQ2GUT4K5C4FZGIB3X4H6ZFUSFR32E3SR36T7CFVGCSSS24RTINWQ` |
 | TestOFT (Sepolia, 6 decimals) | `0x3ae0ed1dffacc319af52a8fe3fa93638d70e6e8e` |
 | PostcardOApp (Sepolia) | `0xf06c1948d85e7539c6e4b424d620831581c908be` |
 
 Shared: endpoint `CALTBA5S…`, ULN `CCMLPCAW…`, DVN `CB7EWGPR…` (LayerZero Labs); Sepolia endpoint `0x6EDCE654…`; the OApps carry per-OApp send and receive ULN configs naming the active DVN, enforced options of 200k gas towards Sepolia and 500k towards Stellar.
 
 The mock mirrors USDT0's admin model on purpose: issuer locked, SAC admin = SAC-manager, new supply only under `MINTER_ROLE` (held by the OFT and by the Faucet, so no key is ever needed in the browser). To see the other OFT mode, `LockUnlock` (a token whose home chain is Stellar: the OFT holds the reserve and the other chain mints), launch one on the Launchpad page.
+
+## Live site
+
+https://kaankacar.github.io/stellar-layerzero-demos/ (GitHub Pages, built by `.github/workflows/pages.yml` on every push to `main`). Deep links return the SPA through `404.html`, so the HTTP status is 404 while the page renders normally.
 
 ## Known caveats
 
@@ -126,6 +132,7 @@ The mock mirrors USDT0's admin model on purpose: issuer locked, SAC admin = SAC-
 - **Attribution.** USDT0 is built and operated by **Everdawn Labs**; USDT is Tether's asset.
 - **Solana.** Phantom is supported in the wallet bar and for Tracker lookups only. No Solana Postcards leg: there is no verified Stellar-testnet ↔ Solana pathway, and a Solana OApp is an Anchor program (see CONTRIBUTING for the extension idea).
 - **HyperCore** is listed by USDT0 but has no EID in the registry; it appears as "no EID" in the peers table.
+- **An OApp must combine enforced options itself.** The OFT does it inside `quote_send`/`send`; a bare OApp built on the skeleton does not. Our first PostcardOApp passed the caller's (empty) options straight to the endpoint and ULN302 rejected them with error `#1114`; the fix is `Self::combine_options(env, dst_eid, msg_type, options)` before `__quote` / `__lz_send` (see `contracts/stellar/postcard-oapp/src/lib.rs`). Found by the end-to-end script, not by the compiler.
 
 ## Project layout
 
