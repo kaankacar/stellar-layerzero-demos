@@ -21,6 +21,10 @@ export interface PacketSent {
   sender: Hex;
   receiver: Hex;
   ledger: number;
+  /** The full encoded packet; header = first 81 bytes, payload = guid + message. */
+  packet: Hex;
+  header: Hex;
+  message: Hex;
 }
 
 // snippet:start findPacketSent
@@ -53,6 +57,9 @@ export async function findPacketSent(env: StellarEnv, txHash: string): Promise<P
         dstEid: u32(45),
         receiver: bytesToHex(p.slice(49, 81)) as Hex,
         ledger: tx.ledger,
+        packet: bytesToHex(p) as Hex,
+        header: bytesToHex(p.slice(0, 81)) as Hex,
+        message: bytesToHex(p.slice(113)) as Hex,
       };
     }
     return null;
