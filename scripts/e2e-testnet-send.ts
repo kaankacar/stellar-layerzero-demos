@@ -17,7 +17,8 @@ import { evmAddressToBytes32, bytesToHex } from '../src/lib/hex';
 import { stellarAddressToBytes32 } from '../src/lib/stellar/strkey';
 import { quoteOft, quoteSend, prepareOftSend } from '../src/lib/stellar/oft';
 import { getTokenBalance } from '../src/lib/stellar/sac';
-import { getMessagesByTx } from '../src/lib/layerzero/scan';
+import { getMessagesByTx, getMessageByGuid } from '../src/lib/layerzero/scan';
+import { findPacketSent } from '../src/lib/stellar/packetEvents';
 import { TERMINAL } from '../src/lib/layerzero/useMessageTracker';
 import { OFT_ABI } from '../src/lib/evm/abi/oft';
 import { VIEM_CHAINS } from '../src/lib/evm/chains';
@@ -35,16 +36,20 @@ if (!dep.stellar?.oft || !dep.evm?.oft) throw new Error('both halves must be dep
 const S = dep.stellar;
 const E = dep.evm;
 const reverse = process.argv.includes('--reverse');
+const trackOnly = process.argv.indexOf('--track') >= 0 ? process.argv[process.argv.indexOf('--track') + 1] : null;
 const deployer = Keypair.fromSecret(envVar('STELLAR_DEPLOYER_SECRET')!);
 const evmAccount = privateKeyToAccount(envVar('EVM_DEPLOYER_PRIVATE_KEY') as Hex);
 const evmCfg = EVM_TESTNETS[E.chainKey];
 const pub = createPublicClient({ chain: VIEM_CHAINS[E.chainKey], transport: http(envVar('EVM_RPC_URL') ?? evmCfg.rpcUrl) });
 
-async function trackUntilTerminal(txHash: string, timeoutMs = 20 * 60_000): Promise<string> {
+async function trackUntilTerminal(txHash: string, timeoutMs = 30 * 60_000): Promise<string> {
   const started = Date.now();
   let last = '';
+  // Stellar sources: Scan indexes by GUID first; read the GUID from the packet_sent event.
+  const packet = txHash.startsWith('0x') ? null : await findPacketSent('testnet', txHash).catch(() => null);
+  if (packet) log(`  guid ${packet.guid} (nonce ${packet.nonce}, ${packet.srcEid} -> ${packet.dstEid}) -> https://testnet.layerzeroscan.com/tx/${packet.guid}`);
   while (Date.now() - started < timeoutMs) {
-    const msgs = await getMessagesByTx('testnet', txHash).catch(() => []);
+    const msgs = packet ? await getMessageByGuid('testnet', packet.guid).catch(() => []) : await getMessagesByTx('testnet', txHash).catch(() => []);
     const m = msgs[0];
     const status = m ? `${m.status.name}${m.status.message ? ` (${m.status.message})` : ''}` : 'not indexed yet';
     if (status !== last) {
@@ -55,6 +60,12 @@ async function trackUntilTerminal(txHash: string, timeoutMs = 20 * 60_000): Prom
     await new Promise((r) => setTimeout(r, 10_000));
   }
   return 'TIMEOUT';
+}
+
+if (trackOnly) {
+  const s = await trackUntilTerminal(trackOnly);
+  log(`message: ${s}`);
+  process.exit(s === 'DELIVERED' ? 0 : 1);
 }
 
 if (!reverse) {

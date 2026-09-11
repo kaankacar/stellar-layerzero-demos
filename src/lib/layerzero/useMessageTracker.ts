@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ScanEnv } from '@/config/networks';
 import { classifyLookup, getMessageByGuid, getMessagesByTx, getMessagesByWallet, type ScanMessage } from '@/lib/layerzero/scan';
 import { errorMessage, HttpError } from '@/lib/net/fetchJson';
+import { findPacketSent } from '@/lib/stellar/packetEvents';
 
 export const TERMINAL: ReadonlySet<string> = new Set(['DELIVERED', 'FAILED', 'BLOCKED', 'APPLICATION_BURNED', 'APPLICATION_SKIPPED', 'UNRESOLVABLE_COMMAND', 'MALFORMED_COMMAND']);
 
@@ -22,8 +23,12 @@ export async function lookupMessages(env: ScanEnv, input: string): Promise<ScanM
   try {
     return await getMessagesByTx(env, q.value);
   } catch (e) {
+    if (!(e instanceof HttpError && e.status === 404)) throw e;
     // A 0x-prefixed 32-byte value may be a GUID rather than a tx hash.
-    if (e instanceof HttpError && e.status === 404 && q.value.startsWith('0x')) return getMessageByGuid(env, q.value);
+    if (q.value.startsWith('0x')) return getMessageByGuid(env, q.value);
+    // A Stellar tx hash: Scan may not have linked it yet, but the GUID is on-chain in the packet_sent event.
+    const packet = await findPacketSent(env, q.value).catch(() => null);
+    if (packet) return getMessageByGuid(env, packet.guid);
     throw e;
   }
 }

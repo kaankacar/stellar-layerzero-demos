@@ -24,12 +24,12 @@ function toRow(m: ScanMessage): TrafficRow {
   const direction = m.pathway.srcEid === USDT0.eid ? 'out' : 'in';
   let amountSd: bigint | null = null;
   try {
-    if (m.source.tx.payload && m.source.tx.payload.length >= 82) amountSd = decodeOftMessage(m.source.tx.payload).amountSd;
+    if (m.source.tx?.payload && m.source.tx.payload.length >= 82) amountSd = decodeOftMessage(m.source.tx.payload).amountSd;
   } catch {
     amountSd = null;
   }
-  const created = m.created ? new Date(m.created).getTime() : (m.source.tx.blockTimestamp ?? 0) * 1000;
-  const src = m.source.tx.blockTimestamp;
+  const created = m.created ? new Date(m.created).getTime() : (m.source.tx?.blockTimestamp ?? 0) * 1000;
+  const src = m.source.tx?.blockTimestamp;
   const dst = m.destination.tx?.blockTimestamp;
   return {
     guid: m.guid,
@@ -41,7 +41,7 @@ function toRow(m: ScanMessage): TrafficRow {
     amount: amountSd === null ? null : Number(amountSd) / 1e6,
     createdAt: created,
     deliverySeconds: src && dst ? dst - src : null,
-    srcTx: m.source.tx.txHash,
+    srcTx: m.source.tx?.txHash ?? m.guid,
     dstTx: m.destination.tx?.txHash ?? null,
   };
 }

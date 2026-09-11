@@ -10,7 +10,8 @@ import { fetchJson } from '@/lib/net/fetchJson';
 import type { MessageStatus } from '@/lib/layerzero/status';
 
 export interface ScanTx {
-  txHash: string;
+  /** Missing while Scan has indexed the message by GUID but not yet linked the source tx. */
+  txHash?: string;
   blockHash?: string;
   blockNumber?: number | string;
   blockTimestamp?: number;
@@ -157,7 +158,7 @@ export function stageTimestamps(m: ScanMessage) {
     .map((d) => d.blockTimestamp)
     .filter((t): t is number => typeof t === 'number');
   return {
-    source: m.source.tx.blockTimestamp,
+    source: m.source.tx?.blockTimestamp,
     dvnFirst: dvnTimes.length ? Math.min(...dvnTimes) : undefined,
     dvnLast: dvnTimes.length ? Math.max(...dvnTimes) : undefined,
     commit: m.verification?.sealer?.tx?.blockTimestamp,

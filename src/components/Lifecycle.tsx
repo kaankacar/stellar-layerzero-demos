@@ -68,14 +68,14 @@ export function Lifecycle({ message: m, env, registry, compact = false }: { mess
   }, [dvns]);
 
   const oft = useMemo(() => {
-    const payload = m.source.tx.payload;
+    const payload = m.source.tx?.payload;
     if (!payload || payload.length < 82) return null;
     try {
       return decodeOftMessage(payload);
     } catch {
       return null;
     }
-  }, [m.source.tx.payload]);
+  }, [m.source.tx?.payload]);
 
   const recipient = useMemo(() => {
     if (!oft) return null;
@@ -91,7 +91,7 @@ export function Lifecycle({ message: m, env, registry, compact = false }: { mess
   }, [oft, dstEidStellar]);
 
   const stageState = (done: boolean, isActive: boolean): StageState => (done ? 'done' : failed && isActive ? 'failed' : isActive ? 'active' : 'pending');
-  const srcDone = m.source.status === 'SUCCEEDED' || !!m.source.tx.blockTimestamp;
+  const srcDone = m.source.status === 'SUCCEEDED' || !!m.source.tx?.blockTimestamp || !!m.guid;
   const s1 = stageState(srcDone, !srcDone);
   const s2 = stageState(dvnDone, srcDone && !dvnDone);
   const s3 = stageState(sealerDone, dvnDone && !sealerDone);
@@ -112,7 +112,7 @@ export function Lifecycle({ message: m, env, registry, compact = false }: { mess
             {info.tone === 'progress' ? <span className="h-1.5 w-1.5 rounded-full bg-accent pulse-dot" /> : null}
             {info.label}
           </span>
-          <a className="text-xs text-accent hover:underline" href={`${SCAN[env].site}/tx/${m.source.tx.txHash}`} target="_blank" rel="noreferrer">LayerZero Scan ↗</a>
+          <a className="text-xs text-accent hover:underline" href={m.source.tx?.txHash ? `${SCAN[env].site}/tx/${m.source.tx.txHash}` : `${SCAN[env].site}/tx/${m.guid}`} target="_blank" rel="noreferrer">LayerZero Scan ↗</a>
         </div>
       </div>
       {m.status.message ? <div className="mb-3 text-xs text-muted">Scan says: “{m.status.message}”</div> : null}
@@ -121,7 +121,7 @@ export function Lifecycle({ message: m, env, registry, compact = false }: { mess
         <div>
           <Stage label="1" state={s1} title={`Source transaction on ${displayName(m.pathway.sender.chain)}`}>
             <div className="flex flex-wrap items-center gap-2">
-              <AddressChip address={m.source.tx.txHash} href={txLink(m.pathway.srcEid, m.source.tx.txHash, registry)} />
+              {m.source.tx?.txHash ? <AddressChip address={m.source.tx.txHash} href={txLink(m.pathway.srcEid, m.source.tx.txHash, registry)} /> : <span className="text-muted">source tx not linked by Scan yet (message found by GUID)</span>}
               {ts.source ? <span>{formatTimestamp(ts.source)} ({timeAgo(ts.source)})</span> : null}
             </div>
             <div className="mt-1">

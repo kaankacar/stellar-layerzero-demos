@@ -51,7 +51,7 @@ export function TrackerPage() {
     setParams(next);
   };
 
-  const exampleChips = useMemo(() => (examples.data ?? []).map((m) => ({ label: `${m.pathway.sender.chain} → ${m.pathway.receiver.chain} · ${m.status.name} · ${timeAgo(m.created ?? m.source.tx.blockTimestamp)}`, value: m.source.tx.txHash, m })), [examples.data]);
+  const exampleChips = useMemo(() => (examples.data ?? []).map((m) => ({ label: `${m.pathway.sender.chain} → ${m.pathway.receiver.chain} · ${m.status.name} · ${timeAgo(m.created ?? m.source.tx?.blockTimestamp)}`, value: m.source.tx?.txHash ?? m.guid, m })), [examples.data]);
 
   return (
     <div className="space-y-6">
@@ -145,14 +145,14 @@ export function TrackerPage() {
         <Section title="Latest USDT0 messages touching Stellar" subtitle="Preloaded from /messages/latest so the page works without input. Click one to open the full lifecycle.">
           <div className="grid gap-2 sm:grid-cols-2">
             {examples.data.map((m) => (
-              <button key={m.guid} className="card flex flex-col gap-1 p-3 text-left hover:border-accent" onClick={() => setQuery(m.source.tx.txHash)}>
+              <button key={m.guid} className="card flex flex-col gap-1 p-3 text-left hover:border-accent" onClick={() => setQuery(m.source.tx?.txHash ?? m.guid)}>
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   <ChainBadge chainKey={m.pathway.sender.chain} registry={registry.data} />
                   <span className="text-muted">→</span>
                   <ChainBadge chainKey={m.pathway.receiver.chain} registry={registry.data} />
                   <span className={`pill ${m.status.name === 'DELIVERED' ? 'border-ok/50 text-ok' : 'border-accent/50 text-accent'}`}>{m.status.name}</span>
                 </div>
-                <div className="mono text-xs text-muted">{truncate(m.source.tx.txHash, 14, 8)} · {timeAgo(m.created ?? m.source.tx.blockTimestamp)}</div>
+                <div className="mono text-xs text-muted">{truncate(m.source.tx?.txHash ?? m.guid, 14, 8)} · {timeAgo(m.created ?? m.source.tx?.blockTimestamp)}</div>
               </button>
             ))}
           </div>
