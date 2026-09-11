@@ -5,6 +5,8 @@
  *
  *   pnpm e2e:testnet             # Stellar -> EVM (tUSDT0 + postcard)
  *   pnpm e2e:testnet --reverse   # EVM -> Stellar (needs Sepolia ETH on the EVM deployer)
+ *   pnpm e2e:testnet --postcard  # only a postcard Stellar -> EVM
+ *   pnpm e2e:testnet --track <tx># follow an existing message
  */
 import { Asset, Keypair, Operation } from '@stellar/stellar-sdk';
 import { readFileSync } from 'node:fs';
@@ -30,13 +32,14 @@ interface Deployment {
   stellar: { sac: string; oft: string; faucet: string; postcard?: string; issuer: string; assetCode: string; deployer: string } | null;
   evm: { chainKey: EvmTestnetKey; eid: number; oft: Address; postcard: Address; deployer: Address } | null;
 }
-const useTestcoin = process.argv.includes('--testcoin');
-const dep = JSON.parse(readFileSync(resolve(ROOT, useTestcoin ? 'src/config/testcoin-deployment.json' : 'src/config/testnet-deployment.json'), 'utf8')) as Deployment;
-if (!dep.stellar?.oft || !dep.evm?.oft) throw new Error('both halves must be deployed first (pnpm deploy:testnet / deploy:testcoin)');
+const useTestcoin = false;
+const dep = JSON.parse(readFileSync(resolve(ROOT, 'src/config/testnet-deployment.json'), 'utf8')) as Deployment;
+if (!dep.stellar?.oft || !dep.evm?.oft) throw new Error('both halves must be deployed first (pnpm deploy:testnet)');
 const S = dep.stellar;
 const E = dep.evm;
 const reverse = process.argv.includes('--reverse');
 const trackOnly = process.argv.indexOf('--track') >= 0 ? process.argv[process.argv.indexOf('--track') + 1] : null;
+const postcardOnly = process.argv.includes('--postcard');
 const deployer = Keypair.fromSecret(envVar('STELLAR_DEPLOYER_SECRET')!);
 const evmAccount = privateKeyToAccount(envVar('EVM_DEPLOYER_PRIVATE_KEY') as Hex);
 const evmCfg = EVM_TESTNETS[E.chainKey];
@@ -66,6 +69,16 @@ if (trackOnly) {
   const s = await trackUntilTerminal(trackOnly);
   log(`message: ${s}`);
   process.exit(s === 'DELIVERED' ? 0 : 1);
+}
+
+if (!reverse && postcardOnly) {
+  if (!S.postcard) throw new Error('no postcard contract');
+  const text = Buffer.from(`hello from Stellar testnet @ ${new Date().toISOString().slice(0, 16)}`);
+  const pcFee = await read<{ native_fee: bigint; zro_fee: bigint }>(S.postcard, 'quote_postcard', [sc.u32(E.eid), sc.bytes(text), sc.bytes(new Uint8Array()), sc.bool(false)]);
+  const pc = await prepareInvoke('testnet', deployer.publicKey(), S.postcard, 'send_postcard', [sc.address(deployer.publicKey()), sc.u32(E.eid), sc.bytes(text), sc.bytes(new Uint8Array()), sc.struct({ native_fee: sc.i128(BigInt(pcFee.native_fee)), zro_fee: sc.i128(0n) })]);
+  const pcSent = await signAndSubmit(pc.tx, deployer);
+  log(`postcard tx ${pcSent.hash} -> https://testnet.layerzeroscan.com/tx/${pcSent.hash}`);
+  process.exit(0);
 }
 
 if (!reverse) {

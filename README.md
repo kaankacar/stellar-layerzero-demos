@@ -1,6 +1,6 @@
 # LayerZero on Stellar: OFT & USDT0 demos
 
-Nine small, heavily explained demos that teach how **LayerZero V2** works on **Stellar**, using **USDT0** (Tether's USDT delivered over LayerZero's OFT standard, live on Stellar mainnet since 2 September 2026) as the real-world example. Built for developers meeting cross-chain on Stellar for the first time and for hackathon teams who want something to fork.
+Eight small, heavily explained demos that teach how **LayerZero V2** works on **Stellar**, using **USDT0** (Tether's USDT delivered over LayerZero's OFT standard, live on Stellar mainnet since 2 September 2026) as the real-world example. Built for developers meeting cross-chain on Stellar for the first time and for hackathon teams who want something to fork.
 
 Every page has the same shape: a **"What's happening here?"** explainer with a diagram, the **live demo**, and an **"Under the hood"** panel showing the exact code the page just ran (extracted from this repo's source at build time, not pseudocode).
 
@@ -16,7 +16,7 @@ The site therefore splits into two modes, shown by a persistent badge on every p
 | Mode | Pages | What happens |
 |---|---|---|
 | **MAINNET · READ-ONLY** | Inspector, Tracker, Quotes, Dashboard | Reads the real USDT0 and real bridge messages via Horizon, Soroban RPC (`simulateTransaction`), the LayerZero registry and the LayerZero Scan API. Never writes, never asks you to sign. |
-| **TESTNET** | Playground, Postcards, TestCoin, Launchpad | A clearly-labelled **mock** `tUSDT0` and a test OFT + postcard OApp wired through the live testnet endpoint to Sepolia. Freighter and MetaMask sign real testnet transactions. |
+| **TESTNET** | Playground, Postcards, Launchpad | A clearly-labelled **mock** `tUSDT0` and a test OFT + postcard OApp wired through the live testnet endpoint to Sepolia. Freighter and MetaMask sign real testnet transactions. |
 
 ## The demos
 
@@ -28,8 +28,7 @@ The site therefore splits into two modes, shown by a persistent badge on every p
 | 4 | **Fee & Quote Explorer** | `quote_oft` and `quote_send` on-chain (no API key), the two fees and their units, a five-chain comparison chart, and the Transfer API as a bring-your-own-key panel. |
 | 5 | **Testnet OFT Playground** | Fund with Friendbot, trustline + faucet mint of the mock **tUSDT0** (a testnet copy of USDT0's setup: locked issuer, SAC-manager admin, `MintBurn` OFT), the wiring (`set_peer`, enforced options, `set_config` DVN override), then send it Stellar → Sepolia (Freighter) and back (MetaMask), tracking each message to delivery, with every XDR/calldata logged. |
 | 6 | **Cross-Chain Postcards** | Raw LayerZero messaging with no tokens: a 140-byte postcard from Stellar lands in a Sepolia contract (and back), rendered on a wall with pixel-art stamps from the message GUID. |
-| 8 | **TestCoin: born on Stellar** | Your own omnichain token: TESTCOIN is issued on Stellar and travels to Sepolia through a `LockUnlock` OFT (the one constructor argument that differs from tUSDT0). Live supply invariant: locked in the Stellar OFT == minted on Sepolia. Faucet, send out, send back. |
-| 9 | **Launch your own omnichain token** | A guided, wallet-signed launch on testnet: throwaway issuer → SAC → SAC-manager → trustline + mint → hand off admin → OFT (MintBurn or LockUnlock) → MINTER_ROLE → lock issuer → Sepolia OFT with MetaMask → peers, enforced options, DVN config on both sides → bridge it. Progress persists in the browser. |
+| 8 | **Launch your own omnichain token** | A guided, wallet-signed launch on testnet: throwaway issuer → SAC → SAC-manager → trustline + mint → hand off admin → OFT (MintBurn or LockUnlock) → MINTER_ROLE → lock issuer → Sepolia OFT with MetaMask → peers, enforced options, DVN config on both sides → bridge it. Progress persists in the browser. |
 | 7 | **Omnichain Dashboard** | Live ticker of USDT0 messages in/out of Stellar, wired-peer graph, current supply and a derived 7-day trajectory, linking to the Dune dashboard for the long view. |
 
 ## Architecture
@@ -88,8 +87,6 @@ pnpm deploy:testnet --evm          # TestOFT + PostcardOApp on Sepolia, setPeer(
                                    #   set_peer, set_enforced_options, endpoint.set_config (send + receive ULN naming the active DVN)
 pnpm e2e:testnet                   # script-signed proof: faucet drip → tUSDT0 Stellar → Sepolia + a postcard, tracked to DELIVERED
 pnpm e2e:testnet --reverse         # Sepolia → Stellar
-pnpm deploy:testcoin               # TESTCOIN: LockUnlock OFT on Stellar + OFT on Sepolia, wired the same way
-pnpm e2e:testnet --testcoin        # TESTCOIN Stellar → Sepolia
 pnpm e2e:testnet --track <tx>      # follow an existing message without sending
 pnpm exec tsx --tsconfig tsconfig.node.json scripts/execute-sepolia.ts <stellar tx>   # deliver a verified message yourself
 ```
@@ -97,8 +94,6 @@ pnpm exec tsx --tsconfig tsconfig.node.json scripts/execute-sepolia.ts <stellar 
 `deploy-testnet.ts` is idempotent (progress in `scripts/.state/`), pulls the endpoint, ULN and DVN from the registry, and refuses to run if the registry's Stellar testnet EID is not 40600. Commit the updated `src/config/testnet-deployment.json` so the site picks it up.
 
 ### Current deployment (Stellar testnet EID 40600 ↔ Sepolia EID 40161)
-
-**tUSDT0** (mirrors USDT0: `MintBurn`)
 
 | Piece | Address |
 |---|---|
@@ -111,20 +106,9 @@ pnpm exec tsx --tsconfig tsconfig.node.json scripts/execute-sepolia.ts <stellar 
 | TestOFT (Sepolia, 6 decimals) | `0x3ae0ed1dffacc319af52a8fe3fa93638d70e6e8e` |
 | PostcardOApp (Sepolia) | `0xf06c1948d85e7539c6e4b424d620831581c908be` |
 
-**TESTCOIN** (born on Stellar: `LockUnlock`)
+Shared: endpoint `CALTBA5S…`, ULN `CCMLPCAW…`, DVN `CB7EWGPR…` (LayerZero Labs); Sepolia endpoint `0x6EDCE654…`; the OApps carry per-OApp send and receive ULN configs naming the active DVN, enforced options of 200k gas towards Sepolia and 500k towards Stellar.
 
-| Piece | Address |
-|---|---|
-| Asset | `TESTCOIN:GC24D4L7YM3LVTRLKHT4NI7MKEA3CRNP65HZDGE4RWHUACMONHP6GSPN` (issuer locked) |
-| SAC | `CA4KEI5HCEYHKIEI6SVQLLQOML4JXEWORP4QYWKARCDPCSGXSKGXGEKS` |
-| SAC-manager | `CBTANY3JC6WLOW3GIPRKXUFFMVAOONYV3GZM5VVX6BFIBMY5H7HF4V4H` |
-| OFT (`LockUnlock`) | `CBGMS5C3M6R3KSPMP4SXF4TP6IUSVQZ2A2TL4LQOQPAPSKLCT3RH2ZYI` |
-| Faucet (500 TESTCOIN per drip) | `CBLA3GCWW2I7R67OAYCAMCXYSVCLG6XKFBAG4BZGP2WOMSTKAYXIDCUR` |
-| TestCoin OFT (Sepolia) | `0x242ad7aaecf92d471703dcdc3669068597029b61` |
-
-Shared: endpoint `CALTBA5S…`, ULN `CCMLPCAW…`, DVN `CB7EWGPR…` (LayerZero Labs); Sepolia endpoint `0x6EDCE654…`; both OApps carry per-OApp send and receive ULN configs naming the active DVN, enforced options of 200k gas towards Sepolia and 500k towards Stellar.
-
-Both mocks mirror USDT0's admin model on purpose: issuer locked, SAC admin = SAC-manager, new supply only under `MINTER_ROLE` (the OFT needs it only in `MintBurn` mode; the Faucet always has it, so no key is ever needed in the browser).
+The mock mirrors USDT0's admin model on purpose: issuer locked, SAC admin = SAC-manager, new supply only under `MINTER_ROLE` (held by the OFT and by the Faucet, so no key is ever needed in the browser). To see the other OFT mode, `LockUnlock` (a token whose home chain is Stellar: the OFT holds the reserve and the other chain mints), launch one on the Launchpad page.
 
 ## Known caveats
 
