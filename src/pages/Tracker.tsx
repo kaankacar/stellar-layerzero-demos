@@ -136,7 +136,7 @@ export function TrackerPage() {
           ) : (
             <div className="space-y-4">
               {tracker.messages.map((m) => (
-                <Lifecycle key={m.guid} message={m} env={env} registry={registry.data} />
+                <Lifecycle key={m.guid} message={m} env={env} registry={registry.data} sourceTxHash={/^[0-9a-fA-F]{64}$/.test(q) ? q : undefined} />
               ))}
             </div>
           )}

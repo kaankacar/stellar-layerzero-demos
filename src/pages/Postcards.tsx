@@ -131,7 +131,7 @@ export function PostcardsPage() {
               <div className="text-xs text-muted">
                 Source tx <a className="text-accent hover:underline" href={direction === 'stellar' ? explorers.stellarTx('testnet', txHash) : explorers.evmTx(EVM.explorer, txHash)} target="_blank" rel="noreferrer">{truncate(txHash, 12, 8)}</a> · <Link className="text-accent hover:underline" to={`/tracker?env=testnet&q=${txHash}`}>open in Tracker</Link>
               </div>
-              {tracker.messages.map((m) => <Lifecycle key={m.guid} message={m} env="testnet" registry={registry.data} compact />)}
+              {tracker.messages.map((m) => <Lifecycle key={m.guid} message={m} env="testnet" registry={registry.data} compact sourceTxHash={direction === 'stellar' && txHash ? txHash : undefined} />)}
               {tracker.messages.length === 0 ? <Spinner label="waiting for LayerZero Scan to index…" /> : null}
             </div>
           ) : null}

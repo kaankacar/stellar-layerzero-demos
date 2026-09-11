@@ -36,3 +36,8 @@ export function bytes32ToStellarCandidates(bytes32: Uint8Array | string): { cont
 export const isStellarAccount = (s: string) => StrKey.isValidEd25519PublicKey(s);
 export const isStellarContract = (s: string) => StrKey.isValidContract(s);
 export const isStellarAddress = (s: string) => isStellarAccount(s) || isStellarContract(s);
+
+/** 0x-hex 32-byte contract id (as the LayerZero registry lists DVNs) -> C… strkey. */
+export function contractHexToStrkey(hex: string): string {
+  return StrKey.encodeContract(Buffer.from(hexToBytes(hex)));
+}

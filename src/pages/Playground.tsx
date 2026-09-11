@@ -379,7 +379,7 @@ export function PlaygroundPage() {
             {outTx ? (
               <div className="space-y-2">
                 <div className="text-xs text-muted">Source tx <a className="text-accent hover:underline" href={explorers.stellarTx('testnet', outTx)} target="_blank" rel="noreferrer">{outTx.slice(0, 16)}…</a> · <Link className="text-accent hover:underline" to={`/tracker?env=testnet&q=${outTx}`}>open in Tracker</Link>{outTracker.loading ? ' · fetching…' : ''}</div>
-                {outTracker.messages.map((m) => <Lifecycle key={m.guid} message={m} env="testnet" registry={registry.data} compact />)}
+                {outTracker.messages.map((m) => <Lifecycle key={m.guid} message={m} env="testnet" registry={registry.data} compact sourceTxHash={outTx ?? undefined} />)}
                 {outTracker.messages.length === 0 && !outTracker.error ? <Spinner label="waiting for LayerZero Scan to index the message (usually under a minute)…" /> : null}
                 {outTracker.error ? <div className="text-xs text-muted">Scan: {outTracker.error} (retrying)</div> : null}
               </div>

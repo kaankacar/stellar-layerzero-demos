@@ -12,6 +12,7 @@ import { explorers, SCAN, type ScanEnv } from '@/config/networks';
 import { formatDuration, formatTimestamp, formatUnits, timeAgo, truncate } from '@/lib/format';
 import { ChainBadge } from '@/components/ChainBadge';
 import { AddressChip } from '@/components/ui';
+import { DeliverYourself } from '@/components/DeliverYourself';
 
 type StageState = 'done' | 'active' | 'pending' | 'failed';
 
@@ -45,7 +46,7 @@ function Stage({ label, state, title, children }: { label: string; state: StageS
 }
 
 /** Animated lifecycle pipeline for one LayerZero message. Reused by the Tracker, Playground, Postcards and Dashboard. */
-export function Lifecycle({ message: m, env, registry, compact = false }: { message: ScanMessage; env: ScanEnv; registry: RegistrySnapshot | null; compact?: boolean }) {
+export function Lifecycle({ message: m, env, registry, compact = false, sourceTxHash }: { message: ScanMessage; env: ScanEnv; registry: RegistrySnapshot | null; compact?: boolean; sourceTxHash?: string }) {
   const info = statusInfo(m.status.name);
   const ts = stageTimestamps(m);
   const dvns = Object.entries(m.verification?.dvn?.dvns ?? {});
@@ -168,6 +169,7 @@ export function Lifecycle({ message: m, env, registry, compact = false }: { mess
                 : 'The executor calls the endpoint\'s lzReceive, which invokes the OApp; for an OFT that mints or unlocks the tokens.'}
             </div>
             {!delivered ? <div className={`mt-2 rounded-md border p-2 ${info.tone === 'danger' ? 'border-danger/50 bg-danger/10' : 'border-border bg-surface-2'}`}><strong className="text-text">{info.label}:</strong> {info.summary} {info.remedy ? <span>{info.remedy}</span> : null}</div> : null}
+            {env === 'testnet' && !delivered ? <DeliverYourself message={m} sourceTxHash={sourceTxHash} /> : null}
           </Stage>
         </div>
 

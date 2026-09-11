@@ -149,7 +149,7 @@ export function TestCoinPage() {
             {bridge.out.tx ? (
               <div className="space-y-2">
                 <div className="text-xs text-muted"><a className="text-accent hover:underline" href={explorers.stellarTx('testnet', bridge.out.tx)} target="_blank" rel="noreferrer">source tx</a> · <Link className="text-accent hover:underline" to={`/tracker?env=testnet&q=${bridge.out.tx}`}>Tracker</Link></div>
-                {bridge.out.tracker.messages.map((m) => <Lifecycle key={m.guid} message={m} env="testnet" registry={registry.data} compact />)}
+                {bridge.out.tracker.messages.map((m) => <Lifecycle key={m.guid} message={m} env="testnet" registry={registry.data} compact sourceTxHash={bridge.out.tx ?? undefined} />)}
                 {bridge.out.tracker.messages.length === 0 ? <Spinner label="waiting for Scan…" /> : null}
               </div>
             ) : null}
