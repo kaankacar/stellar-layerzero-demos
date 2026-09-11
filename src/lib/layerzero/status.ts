@@ -32,7 +32,7 @@ export const STATUS_INFO: Record<MessageStatus, StatusInfo> = {
     detail:
       'The source transaction is final or nearly final. Each required DVN independently verifies the packet and submits an attestation on the destination; once all attestations are in, a committer aggregates them and the executor can deliver.',
     remedy:
-      'Normal for minutes. If it lasts much longer, check the DVN lanes below: a missing attestation usually means the DVN is still waiting for the configured block confirmations on the source chain.',
+      'Normal for minutes on mainnet; on testnets the executor alone has taken up to an hour or more. If a DVN lane stays WAITING, that DVN is still waiting for the configured source confirmations (or its testnet indexer is lagging).',
   },
   CONFIRMING: {
     label: 'Confirming',

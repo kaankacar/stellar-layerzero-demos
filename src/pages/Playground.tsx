@@ -231,6 +231,7 @@ export function PlaygroundPage() {
       </Callout>
       <Callout tone="warn" title="Testnet caveats">
         <p>Stellar testnet has a <strong>single DVN</strong> (LayerZero Labs), so “verification” here is one attestation. The testnet endpoint <strong>has been redeployed before</strong> and may be again; this app pulls addresses from the registry at runtime and checks the deployment below before letting you send. The library default configuration still names a deprecated DVN, which is why the deploy script sets a per-OApp ULN config.</p>
+        <p><strong>Expect testnet latency.</strong> On this pathway the DVN has attested within seconds to minutes, but the Sepolia testnet executor has taken 8 to 90 minutes to deliver recent messages. The tracker keeps polling; you can close the tab and paste the tx hash into the Tracker later.</p>
       </Callout>
 
       <Explainer id="playground">

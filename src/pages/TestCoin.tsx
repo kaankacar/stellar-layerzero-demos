@@ -49,7 +49,7 @@ export function TestCoinPage() {
       </PageHeader>
 
       <Callout tone="testnet" title="Testnet, mock, no value">
-        <p>TESTCOIN is a demo asset issued by a throwaway account this repo controls. Everything below runs on Stellar testnet and {EVM.label}.</p>
+        <p>TESTCOIN is a demo asset issued by a throwaway account this repo controls. Everything below runs on Stellar testnet and {EVM.label}. Testnet delivery is slow: the {EVM.label} executor has taken 8 to 90 minutes on recent messages, so keep the Tracker link.</p>
       </Callout>
 
       <Explainer id="testcoin">
