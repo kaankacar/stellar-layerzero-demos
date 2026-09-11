@@ -10,6 +10,7 @@ const TrackerPage = lazy(() => import('@/pages/Tracker').then((m) => ({ default:
 const QuotesPage = lazy(() => import('@/pages/Quotes').then((m) => ({ default: m.QuotesPage })));
 const PlaygroundPage = lazy(() => import('@/pages/Playground').then((m) => ({ default: m.PlaygroundPage })));
 const PostcardsPage = lazy(() => import('@/pages/Postcards').then((m) => ({ default: m.PostcardsPage })));
+const TestCoinPage = lazy(() => import('@/pages/TestCoin').then((m) => ({ default: m.TestCoinPage })));
 const DashboardPage = lazy(() => import('@/pages/Dashboard').then((m) => ({ default: m.DashboardPage })));
 
 const wrap = (node: ReactNode) => <Suspense fallback={<div className="p-8 text-sm text-muted">Loading demo…</div>}>{node}</Suspense>;
@@ -33,6 +34,7 @@ export const DEMOS: DemoRoute[] = [
   { path: '/quotes', title: 'Fee & Quote Explorer', short: 'Quotes', mode: 'mainnet-readonly', emoji: '💱', blurb: 'Quote real USDT0 transfers on-chain with quote_oft and quote_send, compare five destinations, and try the Transfer API.', element: wrap(<QuotesPage />) },
   { path: '/playground', title: 'Testnet OFT Playground', short: 'Playground', mode: 'testnet', emoji: '🧪', blurb: 'Mint a mock tUSDT0, inspect the wiring, and send it Stellar ↔ Sepolia with Freighter and MetaMask.', element: wrap(<PlaygroundPage />) },
   { path: '/postcards', title: 'Cross-Chain Postcards', short: 'Postcards', mode: 'testnet', emoji: '💌', blurb: 'Raw LayerZero messaging: write a postcard on Stellar testnet and see it land on Sepolia (and back).', element: wrap(<PostcardsPage />) },
+  { path: '/testcoin', title: 'TestCoin: born on Stellar', short: 'TestCoin', mode: 'testnet', emoji: '🪙', blurb: 'Your own omnichain token, issued on Stellar: a LockUnlock OFT whose reserve on Stellar always equals what is minted on Sepolia.', element: wrap(<TestCoinPage />) },
   { path: '/dashboard', title: 'Omnichain Dashboard', short: 'Dashboard', mode: 'mainnet-readonly', emoji: '📊', blurb: 'Recent USDT0 traffic in and out of Stellar, wired peers, supply, and a live ticker of delivered messages.', element: wrap(<DashboardPage />) },
 ];
 

@@ -13,7 +13,7 @@ import { resolve } from 'node:path';
 
 const CHROME = process.env.CHROME_PATH ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const routes = process.argv.slice(2).filter((a) => a.startsWith('/'));
-const ALL = ['/', '/what-is-an-oft', '/inspector', '/tracker', '/quotes', '/playground', '/postcards', '/dashboard'];
+const ALL = ['/', '/what-is-an-oft', '/inspector', '/tracker', '/quotes', '/playground', '/postcards', '/testcoin', '/dashboard'];
 const targets = routes.length ? routes : ALL;
 const expectations: Record<string, string[]> = {
   '/': ['LayerZero V2 on Stellar', 'Registry check'],
@@ -23,6 +23,7 @@ const expectations: Record<string, string[]> = {
   '/what-is-an-oft': ['What is an OFT?', 'Shared decimals and dust', 'Check your understanding'],
   '/playground': ['Testnet OFT Playground'],
   '/postcards': ['Cross-Chain Postcards'],
+  '/testcoin': ['TestCoin', 'LockUnlock', 'Invariant'],
   '/dashboard': ['Omnichain Dashboard'],
 };
 

@@ -1,11 +1,11 @@
 {
-  "deployedAt": "2026-09-10T19:58:48.020Z",
+  "deployedAt": "2026-09-11T13:34:23.212Z",
   "registry": {
     "endpoint": "CALTBA5S6GRJEHAXFP45LGGLKWWAF7HTZCPNUBUJF2HWWRRLQNV35AIV",
     "uln": "CCMLPCAWCPIIMXOHJJKU3NZLOFTT2O6QTB2UUFPN6SEHLK35QRHVKKMB",
     "activeDvn": "CB7EWGPRGD3R3CD2DIYIVXMOEFDINVBGBFFQLFMEMXFWJFJIMHA7ZLSA",
     "activeDvnHex": "0x7e4b19f130f71d887a1a308add8e214686d426094b05958465cb64952861c1fc",
-    "fetchedAt": "2026-09-10T19:58:47.750Z"
+    "fetchedAt": "2026-09-11T13:32:11.231Z"
   },
   "wasm": {
     "monorepoCommit": "b013ffe",
@@ -43,6 +43,19 @@
     "postcardHex": "0x36469d24efdc4e3514b45823036d4efbd6d7587dfc2622a8a4326ffd59083e44",
     "issuerLocked": true
   },
-  "evm": null,
-  "wiring": null
+  "evm": {
+    "chainKey": "sepolia",
+    "eid": 40161,
+    "chainId": 11155111,
+    "endpoint": "0x6EDCE65403992e310A62460808c4b910D972f10f",
+    "deployer": "0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85",
+    "oft": "0x3ae0ed1dffacc319af52a8fe3fa93638d70e6e8e",
+    "postcard": "0xf06c1948d85e7539c6e4b424d620831581c908be"
+  },
+  "wiring": {
+    "stellarPeers": true,
+    "stellarEnforced": true,
+    "stellarSendConfig": true,
+    "stellarReceiveConfig": true
+  }
 }

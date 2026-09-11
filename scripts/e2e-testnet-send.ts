@@ -26,11 +26,12 @@ import { classicTx, invoke, read, signAndSubmit } from './lib/stellar-node';
 import { prepareInvoke } from '../src/lib/stellar/tx';
 
 interface Deployment {
-  stellar: { sac: string; oft: string; faucet: string; postcard: string; issuer: string; assetCode: string; deployer: string } | null;
+  stellar: { sac: string; oft: string; faucet: string; postcard?: string; issuer: string; assetCode: string; deployer: string } | null;
   evm: { chainKey: EvmTestnetKey; eid: number; oft: Address; postcard: Address; deployer: Address } | null;
 }
-const dep = JSON.parse(readFileSync(resolve(ROOT, 'src/config/testnet-deployment.json'), 'utf8')) as Deployment;
-if (!dep.stellar?.oft || !dep.evm?.oft) throw new Error('both halves must be deployed first (pnpm deploy:testnet)');
+const useTestcoin = process.argv.includes('--testcoin');
+const dep = JSON.parse(readFileSync(resolve(ROOT, useTestcoin ? 'src/config/testcoin-deployment.json' : 'src/config/testnet-deployment.json'), 'utf8')) as Deployment;
+if (!dep.stellar?.oft || !dep.evm?.oft) throw new Error('both halves must be deployed first (pnpm deploy:testnet / deploy:testcoin)');
 const S = dep.stellar;
 const E = dep.evm;
 const reverse = process.argv.includes('--reverse');
@@ -67,7 +68,7 @@ if (!reverse) {
   if ((await getTokenBalance('testnet', S.sac, deployer.publicKey())) < 10n * 10n ** 7n) {
     await invoke(S.faucet, 'drip', [sc.address(deployer.publicKey())], deployer);
   }
-  log(`tUSDT0 balance: ${(await getTokenBalance('testnet', S.sac, deployer.publicKey())).toString()} stroops`);
+  log(`${S.assetCode} balance: ${(await getTokenBalance('testnet', S.sac, deployer.publicKey())).toString()} stroops`);
 
   // 1. OFT send 10 tUSDT0 -> EVM deployer
   const param = { dstEid: E.eid, to: evmAddressToBytes32(evmAccount.address), amountLd: 10n * 10n ** 7n, minAmountLd: 0n, extraOptions: new Uint8Array() };
@@ -81,13 +82,16 @@ if (!reverse) {
   log(`OFT message: ${s1}`);
   if (s1 === 'DELIVERED') {
     const evmBal = await pub.readContract({ address: E.oft, abi: OFT_ABI, functionName: 'balanceOf', args: [evmAccount.address] });
-    log(`EVM tUSDT0 balance now ${evmBal.toString()} (6 decimals)`);
+    log(`EVM ${S.assetCode} balance now ${evmBal.toString()} (6 decimals)`);
   }
+
+  if (useTestcoin || !S.postcard) process.exit(s1 === 'DELIVERED' ? 0 : 1); // no postcard contract for TestCoin
+  const postcard = S.postcard;
 
   // 2. Postcard
   const text = Buffer.from(`hello from Stellar testnet @ ${new Date().toISOString().slice(0, 16)}`);
-  const pcFee = await read<{ native_fee: bigint; zro_fee: bigint }>(S.postcard, 'quote_postcard', [sc.u32(E.eid), sc.bytes(text), sc.bytes(new Uint8Array()), sc.bool(false)]);
-  const pc = await prepareInvoke('testnet', deployer.publicKey(), S.postcard, 'send_postcard', [sc.address(deployer.publicKey()), sc.u32(E.eid), sc.bytes(text), sc.bytes(new Uint8Array()), sc.struct({ native_fee: sc.i128(BigInt(pcFee.native_fee)), zro_fee: sc.i128(0n) })]);
+  const pcFee = await read<{ native_fee: bigint; zro_fee: bigint }>(postcard, 'quote_postcard', [sc.u32(E.eid), sc.bytes(text), sc.bytes(new Uint8Array()), sc.bool(false)]);
+  const pc = await prepareInvoke('testnet', deployer.publicKey(), postcard, 'send_postcard', [sc.address(deployer.publicKey()), sc.u32(E.eid), sc.bytes(text), sc.bytes(new Uint8Array()), sc.struct({ native_fee: sc.i128(BigInt(pcFee.native_fee)), zro_fee: sc.i128(0n) })]);
   const pcSent = await signAndSubmit(pc.tx, deployer);
   log(`postcard tx ${pcSent.hash} -> https://testnet.layerzeroscan.com/tx/${pcSent.hash}`);
   const s2 = await trackUntilTerminal(pcSent.hash);
@@ -105,6 +109,6 @@ if (!reverse) {
   log(`EVM send tx ${hash} -> https://testnet.layerzeroscan.com/tx/${hash}`);
   const s = await trackUntilTerminal(hash);
   log(`message: ${s}`);
-  if (s === 'DELIVERED') log(`Stellar tUSDT0 balance now ${(await getTokenBalance('testnet', S.sac, deployer.publicKey())).toString()} stroops`);
+  if (s === 'DELIVERED') log(`Stellar ${S.assetCode} balance now ${(await getTokenBalance('testnet', S.sac, deployer.publicKey())).toString()} stroops`);
   process.exit(s === 'DELIVERED' ? 0 : 1);
 }
