@@ -23,7 +23,7 @@ import solSrc from '../../contracts/evm/src/PostcardOApp.sol?raw';
 
 const D = TESTNET_DEPLOYMENT;
 const READY = deploymentReady(D);
-const EVM_KEY = D.evm?.chainKey ?? 'sepolia';
+const EVM_KEY = D.evm?.chainKey ?? 'arbitrum-sepolia';
 const EVM = EVM_TESTNETS[EVM_KEY];
 
 async function loadWall(): Promise<PostcardItem[]> {

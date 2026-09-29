@@ -87,7 +87,7 @@ const errMsg = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function WalletProvider({ children }: { children: ReactNode }) {
   // ---- expectations (set by pages) ----
   const [expectedStellar, setExpectedStellar] = useState<StellarEnv>('testnet');
-  const [expectedEvm, setExpectedEvm] = useState<EvmTestnetKey>('sepolia');
+  const [expectedEvm, setExpectedEvm] = useState<EvmTestnetKey>('arbitrum-sepolia');
   const setExpected = useCallback((e: { stellar?: StellarEnv; evm?: EvmTestnetKey }) => {
     if (e.stellar) setExpectedStellar(e.stellar);
     if (e.evm) setExpectedEvm(e.evm);

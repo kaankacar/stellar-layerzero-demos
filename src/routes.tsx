@@ -12,6 +12,7 @@ const PlaygroundPage = lazy(() => import('@/pages/Playground').then((m) => ({ de
 const PostcardsPage = lazy(() => import('@/pages/Postcards').then((m) => ({ default: m.PostcardsPage })));
 const LaunchpadPage = lazy(() => import('@/pages/Launchpad').then((m) => ({ default: m.LaunchpadPage })));
 const DashboardPage = lazy(() => import('@/pages/Dashboard').then((m) => ({ default: m.DashboardPage })));
+const ComposePage = lazy(() => import('@/pages/Compose').then((m) => ({ default: m.ComposePage })));
 
 const wrap = (node: ReactNode) => <Suspense fallback={<div className="p-8 text-sm text-muted">Loading demo…</div>}>{node}</Suspense>;
 
@@ -32,9 +33,10 @@ export const DEMOS: DemoRoute[] = [
   { path: '/inspector', title: 'USDT0 Inspector', short: 'Inspector', mode: 'mainnet-readonly', emoji: '🔬', blurb: 'A live fact sheet of the real USDT0: Horizon flags, issuer lock, SAC/OFT config and the DVN trust model, each with the exact call.', element: wrap(<InspectorPage />) },
   { path: '/tracker', title: 'Bridge Message Tracker', short: 'Tracker', mode: 'mainnet-readonly', emoji: '📡', blurb: 'Paste a tx hash, GUID or wallet and watch the LayerZero message lifecycle: source, DVN attestations, commit, delivery.', element: wrap(<TrackerPage />) },
   { path: '/quotes', title: 'Fee & Quote Explorer', short: 'Quotes', mode: 'mainnet-readonly', emoji: '💱', blurb: 'Quote real USDT0 transfers on-chain with quote_oft and quote_send, compare five destinations, and try the Transfer API.', element: wrap(<QuotesPage />) },
-  { path: '/playground', title: 'Testnet OFT Playground', short: 'Playground', mode: 'testnet', emoji: '🧪', blurb: 'Mint a mock tUSDT0, inspect the wiring, and send it Stellar ↔ Sepolia with Freighter and MetaMask.', element: wrap(<PlaygroundPage />) },
-  { path: '/postcards', title: 'Cross-Chain Postcards', short: 'Postcards', mode: 'testnet', emoji: '💌', blurb: 'Raw LayerZero messaging: write a postcard on Stellar testnet and see it land on Sepolia (and back).', element: wrap(<PostcardsPage />) },
-  { path: '/launch', title: 'Launch your own omnichain token', short: 'Launch', mode: 'testnet', emoji: '🚀', blurb: 'Issue a Stellar asset, deploy its SAC, SAC-manager and OFT, lock the issuer, deploy the Sepolia side with MetaMask, and wire them: a dozen wallet-signed transactions, each explained.', element: wrap(<LaunchpadPage />) },
+  { path: '/playground', title: 'Testnet OFT Playground', short: 'Playground', mode: 'testnet', emoji: '🧪', blurb: 'Mint a mock tUSDT0, inspect the wiring, and send it Stellar ↔ Arbitrum Sepolia with Freighter and MetaMask.', element: wrap(<PlaygroundPage />) },
+  { path: '/postcards', title: 'Cross-Chain Postcards', short: 'Postcards', mode: 'testnet', emoji: '💌', blurb: 'Raw LayerZero messaging: write a postcard on Stellar testnet and see it land on Arbitrum Sepolia (and back).', element: wrap(<PostcardsPage />) },
+  { path: '/launch', title: 'Launch your own omnichain token', short: 'Launch', mode: 'testnet', emoji: '🚀', blurb: 'Issue a Stellar asset, deploy its SAC, SAC-manager and OFT, lock the issuer, deploy the Arbitrum Sepolia side with MetaMask, and wire them: a dozen wallet-signed transactions, each explained.', element: wrap(<LaunchpadPage />) },
+  { path: '/compose', title: 'Compose: MetaMask drives a Soroban vault', short: 'Compose', mode: 'testnet', emoji: '🧩', blurb: 'A Stellar app with no Stellar wallet: deposit tUSDT0 into a Soroban vault straight from MetaMask on Arbitrum Sepolia with a composed message, then withdraw with a MetaMask signature that the contract verifies with secp256k1_recover.', element: wrap(<ComposePage />) },
   { path: '/dashboard', title: 'Omnichain Dashboard', short: 'Dashboard', mode: 'mainnet-readonly', emoji: '📊', blurb: 'Recent USDT0 traffic in and out of Stellar, wired peers, supply, and a live ticker of delivered messages.', element: wrap(<DashboardPage />) },
 ];
 

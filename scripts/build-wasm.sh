@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build the Stellar contracts this repo deploys on testnet:
-#   oft, sac_manager (LayerZero's, from the monorepo), postcard_oapp, faucet (ours).
+#   oft, sac_manager (LayerZero's, from the monorepo), postcard_oapp, faucet, composer_vault (ours).
 #
 # LayerZero's Stellar crates are not on crates.io; the monorepo wires them with
 # npm-style `dependencies/` trees that make cargo see the same crate at two
@@ -85,6 +85,7 @@ build_one "$BUILD/crates/oft" oft oft
 build_one "$BUILD/crates/sac-manager" sac-manager sac_manager
 build_one "$ROOT/contracts/stellar/postcard-oapp" postcard-oapp postcard_oapp
 build_one "$ROOT/contracts/stellar/faucet" faucet faucet
+build_one "$ROOT/contracts/stellar/composer-vault" composer-vault composer_vault
 
 # 5. Manifest with hashes so deployments are reproducible.
 python3 - "$OUT" "$SRC_COMMIT" "$TOOLCHAIN" <<'PY'

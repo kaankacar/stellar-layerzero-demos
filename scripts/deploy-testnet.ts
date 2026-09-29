@@ -11,7 +11,7 @@
  *
  * Sequence (see README "Deploy the testnet OFT"):
  *   Stellar: asset -> SAC -> SAC-manager -> SAC.set_admin(manager) -> OFT(MintBurn) -> Faucet
- *            -> grant MINTER_ROLE (OFT, Faucet) -> lock issuer -> PostcardOApp
+ *            -> grant MINTER_ROLE (OFT, Faucet) -> lock issuer -> PostcardOApp -> ComposerVault
  *   EVM:     TestOFT + PostcardOApp -> setPeer(40600) -> setEnforcedOptions
  *   Stellar: set_peer(evm) -> set_enforced_options -> endpoint.set_config (send + receive ULN with the active DVN)
  */
@@ -49,6 +49,7 @@ interface State {
     oft?: string;
     faucet?: string;
     postcard?: string;
+    composer?: string;
     rolesGranted?: boolean;
     issuerLocked?: boolean;
     wasm?: Record<string, string>;
@@ -85,7 +86,9 @@ const ACTIVE_DVN = STELLAR_FALLBACK.testnet.dvns[activeDvnHex]?.strkey || StrKey
 log(`endpoint ${ENDPOINT}\n         uln      ${ULN}\n         dvn      ${ACTIVE_DVN} (${dvnsLive[0]?.name ?? 'LayerZero Labs'})`);
 if (live && live.endpointV2 !== STELLAR_FALLBACK.testnet.endpointV2) warn('registry endpoint differs from the documented fallback: the testnet was redeployed again. Update src/config/layerzero.fallback.ts.');
 
-const evmKey = (envVar('EVM_TESTNET') as EvmTestnetKey | undefined) ?? 'sepolia';
+// Arbitrum Sepolia since 2026-09-29: the LayerZero Labs testnet DVN attests that pathway within seconds, while
+// Sepolia -> Stellar testnet has waited since 9 September. EVM_TESTNET=sepolia still works for the old pathway.
+const evmKey = (envVar('EVM_TESTNET') as EvmTestnetKey | undefined) ?? 'arbitrum-sepolia';
 const evmCfg = EVM_TESTNETS[evmKey];
 const evmRegistry = chainByKey(registry, evmCfg.chainKey)?.deployments.find((d) => d.eid === evmCfg.eid);
 const EVM_ENDPOINT = ((evmRegistry?.endpointV2 as Address | undefined) ?? EVM_TESTNET_FALLBACK[evmKey].endpointV2) as Address;
@@ -126,7 +129,7 @@ if (doStellar) {
   }
   // 2. wasm uploads
   S.wasm ??= {};
-  for (const name of ['sac_manager', 'oft', 'faucet', 'postcard_oapp']) {
+  for (const name of ['sac_manager', 'oft', 'faucet', 'postcard_oapp', 'composer_vault']) {
     if (!S.wasm[name]) {
       S.wasm[name] = await uploadWasm(resolve(WASM, `${name}.wasm`), deployer);
       save();
@@ -180,6 +183,14 @@ if (doStellar) {
     const r = await deployContract(S.wasm.postcard_oapp!, deployer, [sc.address(deployer.publicKey()), sc.address(ENDPOINT), sc.address(deployer.publicKey())]);
     S.postcard = r.contractId;
     log(`PostcardOApp ${S.postcard}`);
+    save();
+  }
+  // 10. ComposerVault(endpoint, oft, token): the MetaMask-only app behind the Compose page. Not an OApp: it
+  //     receives tUSDT0 from our OFT plus a compose message, so it needs no peers or ULN config of its own.
+  if (!S.composer) {
+    const r = await deployContract(S.wasm.composer_vault!, deployer, [sc.address(ENDPOINT), sc.address(S.oft!), sc.address(S.sac!)]);
+    S.composer = r.contractId;
+    log(`ComposerVault ${S.composer}`);
     save();
   }
 }
@@ -242,7 +253,9 @@ if (doEvm) {
       if (!E.enforcedSet) {
         // Same budget the production Ethereum adapter enforces for deliveries on Stellar.
         const opts = encodeLzReceiveOption(500_000n);
-        await write(E.oft, 'setEnforcedOptions', [[{ eid: 40600, msgType: 1, options: opts }]], peerAbi);
+        // msgType 1 = SEND, 2 = SEND_AND_CALL (a composeMsg is present). Both need the lz_receive budget on
+        // Stellar; the sender adds the lzCompose option for the composer on top (see the Compose page).
+        await write(E.oft, 'setEnforcedOptions', [[{ eid: 40600, msgType: 1, options: opts }, { eid: 40600, msgType: 2, options: opts }]], peerAbi);
         await write(E.postcard, 'setEnforcedOptions', [[{ eid: 40600, msgType: 1, options: opts }]], peerAbi);
         E.enforcedSet = true;
         save();
@@ -326,6 +339,8 @@ const out = {
         faucet: state.stellar.faucet ?? null,
         postcard: state.stellar.postcard ?? null,
         postcardHex: state.stellar.postcard ? bytesToHex(stellarAddressToBytes32(state.stellar.postcard)) : null,
+        composer: state.stellar.composer ?? null,
+        composerHex: state.stellar.composer ? bytesToHex(stellarAddressToBytes32(state.stellar.composer)) : null,
         issuerLocked: state.stellar.issuerLocked ?? false,
       }
     : null,

@@ -24,6 +24,10 @@ export const OFT_ABI = parseAbi([
   'function owner() view returns (address)',
   'function endpoint() view returns (address)',
   'function totalSupply() view returns (uint256)',
+  'function faucet()',
+  'function lastDrip(address who) view returns (uint256)',
+  'function FAUCET_AMOUNT() view returns (uint256)',
+  'function FAUCET_COOLDOWN() view returns (uint256)',
   'event OFTSent(bytes32 indexed guid, uint32 dstEid, address indexed fromAddress, uint256 amountSentLD, uint256 amountReceivedLD)',
   'event OFTReceived(bytes32 indexed guid, uint32 srcEid, address indexed toAddress, uint256 amountReceivedLD)',
 ]);

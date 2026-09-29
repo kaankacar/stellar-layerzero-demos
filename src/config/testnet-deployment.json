@@ -1,15 +1,19 @@
 {
-  "deployedAt": "2026-09-11T14:41:37.271Z",
+  "deployedAt": "2026-09-29T15:07:33.452Z",
   "registry": {
     "endpoint": "CALTBA5S6GRJEHAXFP45LGGLKWWAF7HTZCPNUBUJF2HWWRRLQNV35AIV",
     "uln": "CCMLPCAWCPIIMXOHJJKU3NZLOFTT2O6QTB2UUFPN6SEHLK35QRHVKKMB",
     "activeDvn": "CB7EWGPRGD3R3CD2DIYIVXMOEFDINVBGBFFQLFMEMXFWJFJIMHA7ZLSA",
     "activeDvnHex": "0x7e4b19f130f71d887a1a308add8e214686d426094b05958465cb64952861c1fc",
-    "fetchedAt": "2026-09-11T13:32:11.231Z"
+    "fetchedAt": "2026-09-29T15:07:31.811Z"
   },
   "wasm": {
     "monorepoCommit": "b013ffe",
     "files": {
+      "composer_vault.wasm": {
+        "sha256": "6efa428eebb5c82b9cb3644ccb73db9da55a9c446cda37eda515be850c33dcbe",
+        "bytes": 27892
+      },
       "faucet.wasm": {
         "sha256": "f45764c5d52baa6aebb2a31972761b6f7e5ab4f12678d94236461b33ebf1b7bc",
         "bytes": 3727
@@ -41,13 +45,15 @@
     "faucet": "CBFDW3L2CG7RUANKFSLGIOREVMXLW52EKLARBSIVGVP424LMNRNHLPUS",
     "postcard": "CCGXQ2GUT4K5C4FZGIB3X4H6ZFUSFR32E3SR36T7CFVGCSSS24RTINWQ",
     "postcardHex": "0x8d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d72334",
+    "composer": "CD2LRGWZT7DJ4CMYDA56VKTWYYBUFE3G6OVXAMOSTLAYMA6UN3BDE4RV",
+    "composerHex": "0xf4b89ad99fc69e0998183beaaa76c603429366f3ab7031d29ac18603d46ec232",
     "issuerLocked": true
   },
   "evm": {
-    "chainKey": "sepolia",
-    "eid": 40161,
-    "chainId": 11155111,
-    "endpoint": "0x6EDCE65403992e310A62460808c4b910D972f10f",
+    "chainKey": "arbitrum-sepolia",
+    "eid": 40231,
+    "chainId": 421614,
+    "endpoint": "0x6edce65403992e310a62460808c4b910d972f10f",
     "deployer": "0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85",
     "oft": "0x3ae0ed1dffacc319af52a8fe3fa93638d70e6e8e",
     "postcard": "0xf06c1948d85e7539c6e4b424d620831581c908be"

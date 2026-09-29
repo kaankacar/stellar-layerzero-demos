@@ -56,6 +56,25 @@ export function encodeLzReceiveOption(gas: bigint, value = 0n): Hex {
 }
 // snippet:end encodeLzReceiveOption
 
+// snippet:start encodeLzComposeOption
+/**
+ * Type-3 blob with a single executor lzCompose option: after lz_receive, run lz_compose #index on the
+ * composer the OFT message names, with this gas budget. The OFT combines it with its enforced options
+ * for message type 2 (SEND_AND_CALL).
+ */
+export function encodeLzComposeOption(index: number, gas: bigint, value = 0n): Hex {
+  const gasBytes = bigintToBytesBE(gas, 16);
+  const body = value === 0n ? concatBytes(u16be(index), gasBytes) : concatBytes(u16be(index), gasBytes, bigintToBytesBE(value, 16));
+  const option = concatBytes(
+    new Uint8Array([WORKER_EXECUTOR]),
+    u16be(1 + body.length), // option type byte + payload
+    new Uint8Array([EXECUTOR_OPTION_LZCOMPOSE]),
+    body,
+  );
+  return bytesToHex(concatBytes(u16be(OPTIONS_TYPE_3), option)) as Hex;
+}
+// snippet:end encodeLzComposeOption
+
 /** Append extra options to an existing type-3 blob (what the OApp does with enforced + caller options). */
 export function combineOptions(enforced: Hex, extra: Hex): Hex {
   const e = hexToBytes(enforced);

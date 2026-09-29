@@ -1,10 +1,14 @@
 {
-  "builtAt": "2026-09-11T14:39:35.060869+00:00",
+  "builtAt": "2026-09-29T15:02:18.668116+00:00",
   "monorepoCommit": "b013ffe",
   "rustToolchain": "1.90.0",
   "target": "wasm32v1-none",
   "sorobanSdk": "25.1.1",
   "files": {
+    "composer_vault.wasm": {
+      "sha256": "6efa428eebb5c82b9cb3644ccb73db9da55a9c446cda37eda515be850c33dcbe",
+      "bytes": 27892
+    },
     "faucet.wasm": {
       "sha256": "f45764c5d52baa6aebb2a31972761b6f7e5ab4f12678d94236461b33ebf1b7bc",
       "bytes": 3727
@@ -21,5 +25,6 @@
       "sha256": "745836666ad905700078d1cdfb4e2be9c508db9c6d6ca46b7c6479a82063c599",
       "bytes": 39171
     }
-  }
+  },
+  "note": "oft, sac_manager, faucet and postcard_oapp are the 2026-09-11 builds that are deployed; composer_vault was built 2026-09-29 with the same recipe."
 }

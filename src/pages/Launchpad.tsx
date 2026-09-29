@@ -22,7 +22,7 @@ import { extractSnippet } from '@/lib/snippets';
 import actionsSrc from '@/lib/launchpad/actions.ts?raw';
 import executeSrc from '@/lib/evm/execute.ts?raw';
 
-const EVM_KEY = 'sepolia' as const;
+const EVM_KEY = 'arbitrum-sepolia' as const;
 const EVM = EVM_TESTNETS[EVM_KEY];
 
 interface Step {
@@ -165,9 +165,9 @@ export function LaunchpadPage() {
       },
       {
         id: 'evm', title: `Deploy the ${EVM.label} OFT`, who: 'MetaMask', done: !!st.evmOft, enabled: !!st.oft && !!evm.walletClient && !evm.wrongNetwork,
-        detail: `A plain LayerZero OFT (the contract is the ERC20) with 6 decimals: constructor(name, symbol, endpoint ${EVM_TESTNET_FALLBACK.sepolia.endpointV2.slice(0, 8)}…, delegate = you). Needs a little ${EVM.label} ETH.`,
+        detail: `A plain LayerZero OFT (the contract is the ERC20) with 6 decimals: constructor(name, symbol, endpoint ${EVM_TESTNET_FALLBACK[EVM_KEY].endpointV2.slice(0, 8)}…, delegate = you). Needs a little ${EVM.label} ETH.`,
         run: async () => {
-          const { address, hash } = await deployEvmOft(evm.walletClient!, publicClient(EVM_KEY), st.name, st.code, EVM_TESTNET_FALLBACK.sepolia.endpointV2);
+          const { address, hash } = await deployEvmOft(evm.walletClient!, publicClient(EVM_KEY), st.name, st.code, EVM_TESTNET_FALLBACK[EVM_KEY].endpointV2);
           console_.log('ok', `${EVM.label} OFT ${address} (tx ${hash})`);
           update({ evmOft: address, evmOwner: evm.address ?? undefined });
         },

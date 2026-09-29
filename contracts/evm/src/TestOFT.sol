@@ -28,4 +28,21 @@ contract TestOFT is OFT {
     function decimals() public pure override returns (uint8) {
         return 6;
     }
+
+    // snippet:start evmFaucetSol
+    /// @notice Testnet-only faucet: 1,000 tUSDT0 to the caller, once per hour. Mirrors the Stellar Faucet
+    ///         contract so a MetaMask-only user can try the compose page without a Stellar wallet.
+    ///         Like the Stellar faucet it mints out of thin air, so the mock's supply is not bridged supply.
+    uint256 public constant FAUCET_AMOUNT = 1_000 * 10 ** 6;
+    uint256 public constant FAUCET_COOLDOWN = 1 hours;
+    mapping(address => uint256) public lastDrip;
+    event Drip(address indexed to, uint256 amount);
+
+    function faucet() external {
+        require(block.timestamp >= lastDrip[msg.sender] + FAUCET_COOLDOWN, "faucet: cooldown");
+        lastDrip[msg.sender] = block.timestamp;
+        _mint(msg.sender, FAUCET_AMOUNT);
+        emit Drip(msg.sender, FAUCET_AMOUNT);
+    }
+    // snippet:end evmFaucetSol
 }

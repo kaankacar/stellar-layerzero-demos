@@ -18,6 +18,8 @@ export interface TestnetDeployment {
     faucet: string | null;
     postcard: string | null;
     postcardHex: string | null;
+    composer: string | null;
+    composerHex: string | null;
     issuerLocked: boolean;
   } | null;
   evm: { chainKey: 'sepolia' | 'arbitrum-sepolia'; eid: number; chainId: number; endpoint: `0x${string}`; deployer: `0x${string}`; oft: `0x${string}` | null; postcard: `0x${string}` | null } | null;

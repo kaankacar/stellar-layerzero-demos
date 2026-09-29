@@ -17,6 +17,7 @@
     "compile:evm": "tsx --tsconfig tsconfig.node.json scripts/compile-evm.ts",
     "deploy:testnet": "tsx --tsconfig tsconfig.node.json scripts/deploy-testnet.ts",
     "e2e:testnet": "tsx --tsconfig tsconfig.node.json scripts/e2e-testnet-send.ts",
+    "e2e:compose": "tsx --tsconfig tsconfig.node.json scripts/e2e-compose.ts",
     "smoke": "tsx --tsconfig tsconfig.node.json scripts/smoke.ts"
   },
   "dependencies": {

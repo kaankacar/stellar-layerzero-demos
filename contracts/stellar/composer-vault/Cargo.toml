@@ -1,0 +1,29 @@
+[package]
+name = "composer-vault"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "A Soroban vault driven entirely from an EVM wallet: tUSDT0 arrives through the OFT with a compose message and is credited to the sender's EVM address; the same key withdraws with a personal_sign signature verified on Stellar (secp256k1_recover). Teaching contract for stellar-layerzero-demos."
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+# Path dependencies point at the vendored LayerZero crates that scripts/build-wasm.sh prepares.
+[dependencies]
+soroban-sdk = { version = "=25.1.1", features = ["hazmat-address", "hazmat-crypto"] }
+soroban-sdk-macros = "=25.1.1"
+endpoint-v2 = { path = "../../../.lz-build/vendor/endpoint-v2", default-features = false, features = ["library"] }
+oft-core = { path = "../../../.lz-build/vendor/oft-core" }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[workspace]

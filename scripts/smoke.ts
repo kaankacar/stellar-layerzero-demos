@@ -13,7 +13,7 @@ import { resolve } from 'node:path';
 
 const CHROME = process.env.CHROME_PATH ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const routes = process.argv.slice(2).filter((a) => a.startsWith('/'));
-const ALL = ['/', '/what-is-an-oft', '/inspector', '/tracker', '/quotes', '/playground', '/postcards', '/launch', '/dashboard'];
+const ALL = ['/', '/what-is-an-oft', '/inspector', '/tracker', '/quotes', '/playground', '/postcards', '/launch', '/compose', '/dashboard'];
 const targets = routes.length ? routes : ALL;
 const expectations: Record<string, string[]> = {
   '/': ['LayerZero V2 on Stellar', 'Registry check'],
@@ -24,6 +24,7 @@ const expectations: Record<string, string[]> = {
   '/playground': ['Testnet OFT Playground'],
   '/postcards': ['Cross-Chain Postcards'],
   '/launch': ['Launch your own omnichain token', 'Design your token'],
+  '/compose': ['MetaMask drives a Soroban vault', 'Deposit from MetaMask', 'Withdraw with a MetaMask signature'],
   '/dashboard': ['Omnichain Dashboard'],
 };
 
