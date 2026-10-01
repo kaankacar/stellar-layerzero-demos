@@ -5,6 +5,7 @@
 import type { Address, Hex, PublicClient, WalletClient } from 'viem';
 import type { StellarEnv } from '@/config/networks';
 import { readContract } from '@/lib/stellar/simulate';
+import { evmFeeOverrides } from '@/lib/evm/oft';
 import { prepareInvoke, type PreparedTx } from '@/lib/stellar/tx';
 import { sc, asBytes } from '@/lib/stellar/scval';
 import { bytesToHex } from '@/lib/hex';
@@ -59,6 +60,6 @@ export async function quoteEvmPostcard(client: PublicClient, contract: Address, 
 }
 export async function sendEvmPostcard(wallet: WalletClient, contract: Address, dstEid: number, text: string, nativeFee: bigint): Promise<Hex> {
   if (!wallet.account) throw new Error('no account');
-  return wallet.writeContract({ address: contract, abi: POSTCARD_ABI, functionName: 'sendPostcard', args: [dstEid, text, '0x'], value: nativeFee, account: wallet.account, chain: wallet.chain });
+  return wallet.writeContract({ address: contract, abi: POSTCARD_ABI, functionName: 'sendPostcard', args: [dstEid, text, '0x'], value: nativeFee, account: wallet.account, chain: wallet.chain, ...(await evmFeeOverrides(wallet)) });
 }
 // snippet:end evmPostcards

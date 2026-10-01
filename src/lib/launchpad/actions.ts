@@ -8,6 +8,7 @@
 import { Address, Asset, AuthClawbackEnabledFlag, AuthRevocableFlag, BASE_FEE, Keypair, Operation, TransactionBuilder, rpc, xdr, type Transaction } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 import type { Address as EvmAddress, Hex, PublicClient, WalletClient } from 'viem';
+import { evmFeeOverrides } from '@/lib/evm/oft';
 import { STELLAR } from '@/config/networks';
 import { withRpc } from '@/lib/stellar/rpc';
 import { SimulationError } from '@/lib/stellar/simulate';
@@ -117,20 +118,20 @@ const PEER_ABI = [
 /** Deploy the EVM half with MetaMask: a plain OFT (the contract is the ERC20). */
 export async function deployEvmOft(wallet: WalletClient, pub: PublicClient, name: string, symbol: string, endpoint: EvmAddress): Promise<{ address: EvmAddress; hash: Hex }> {
   if (!wallet.account) throw new Error('connect MetaMask');
-  const hash = await wallet.deployContract({ abi: TEST_OFT.abi as never, bytecode: TEST_OFT.bytecode, args: [name, symbol, endpoint, wallet.account.address] as never, account: wallet.account, chain: wallet.chain });
+  const hash = await wallet.deployContract({ abi: TEST_OFT.abi as never, bytecode: TEST_OFT.bytecode, args: [name, symbol, endpoint, wallet.account.address] as never, account: wallet.account, chain: wallet.chain, ...(await evmFeeOverrides(wallet)) });
   const rc = await pub.waitForTransactionReceipt({ hash });
   if (!rc.contractAddress) throw new Error('deployment failed');
   return { address: rc.contractAddress, hash };
 }
 export async function evmSetPeer(wallet: WalletClient, pub: PublicClient, oft: EvmAddress, stellarOftHex: Hex): Promise<Hex> {
   if (!wallet.account) throw new Error('connect MetaMask');
-  const hash = await wallet.writeContract({ address: oft, abi: PEER_ABI, functionName: 'setPeer', args: [40600, stellarOftHex], account: wallet.account, chain: wallet.chain });
+  const hash = await wallet.writeContract({ address: oft, abi: PEER_ABI, functionName: 'setPeer', args: [40600, stellarOftHex], account: wallet.account, chain: wallet.chain, ...(await evmFeeOverrides(wallet)) });
   await pub.waitForTransactionReceipt({ hash });
   return hash;
 }
 export async function evmSetEnforced(wallet: WalletClient, pub: PublicClient, oft: EvmAddress): Promise<Hex> {
   if (!wallet.account) throw new Error('connect MetaMask');
-  const hash = await wallet.writeContract({ address: oft, abi: PEER_ABI, functionName: 'setEnforcedOptions', args: [[{ eid: 40600, msgType: 1, options: encodeLzReceiveOption(500_000n) }]], account: wallet.account, chain: wallet.chain });
+  const hash = await wallet.writeContract({ address: oft, abi: PEER_ABI, functionName: 'setEnforcedOptions', args: [[{ eid: 40600, msgType: 1, options: encodeLzReceiveOption(500_000n) }]], account: wallet.account, chain: wallet.chain, ...(await evmFeeOverrides(wallet)) });
   await pub.waitForTransactionReceipt({ hash });
   return hash;
 }

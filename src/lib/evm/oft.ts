@@ -10,6 +10,20 @@ import { OFT_ABI } from '@/lib/evm/abi/oft';
  * to the block gas limit (2^50 gas), which shows up as a fee of tens of thousands of ETH. Simulating through
  * the wallet's own provider surfaces the real revert reason (for example ERC20InsufficientBalance) instead.
  */
+/**
+ * Fee cap with headroom. On Arbitrum the base fee drifts between MetaMask's estimate and the submission, and
+ * MetaMask adds no buffer there, so a raw transaction can be rejected with "max fee per gas less than block
+ * base fee". A cap of three times the current base fee avoids that; the unused part is refunded.
+ */
+export async function evmFeeOverrides(wallet: WalletClient): Promise<{ maxFeePerGas: bigint; maxPriorityFeePerGas: bigint }> {
+  const pub = wallet.extend(publicActions);
+  const [block, fees] = await Promise.all([pub.getBlock(), pub.estimateFeesPerGas().catch(() => null)]);
+  const base = block.baseFeePerGas ?? fees?.maxFeePerGas ?? 0n;
+  const estimate = fees?.maxFeePerGas ?? base;
+  const cap = base * 3n > estimate ? base * 3n : estimate;
+  return { maxFeePerGas: cap, maxPriorityFeePerGas: fees?.maxPriorityFeePerGas ?? 0n };
+}
+
 export function readableEvmError(e: unknown): Error {
   const err = e as { shortMessage?: string; message?: string; cause?: { shortMessage?: string } };
   return new Error(err.cause?.shortMessage ?? err.shortMessage ?? err.message ?? String(e));
@@ -60,7 +74,7 @@ export async function evmSend(wallet: WalletClient, oft: Address, p: EvmSendPara
       account,
       chain: wallet.chain,
     });
-    return await wallet.writeContract(request);
+    return await wallet.writeContract({ ...request, ...(await evmFeeOverrides(wallet)) });
   } catch (e) {
     throw readableEvmError(e);
   }

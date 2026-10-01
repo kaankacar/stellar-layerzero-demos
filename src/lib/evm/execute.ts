@@ -10,6 +10,7 @@
  */
 import { keccak256, parseAbi, type Address, type Hex, type PublicClient, type WalletClient } from 'viem';
 import { bytes32ToEvmAddress, hexToBytes, bytesToHex, concatBytes } from '@/lib/hex';
+import { evmFeeOverrides } from '@/lib/evm/oft';
 import type { PacketSent } from '@/lib/stellar/packetEvents';
 
 export const RECEIVE_ULN_ABI = parseAbi([
@@ -75,11 +76,11 @@ export async function dvnVerified(client: PublicClient, receiveUln: Address, pla
 // snippet:start deliverYourself
 export async function commitVerification(wallet: WalletClient, receiveUln: Address, plan: DeliveryPlan): Promise<Hex> {
   if (!wallet.account) throw new Error('no account');
-  return wallet.writeContract({ address: receiveUln, abi: RECEIVE_ULN_ABI, functionName: 'commitVerification', args: [plan.header, plan.payloadHash], account: wallet.account, chain: wallet.chain });
+  return wallet.writeContract({ address: receiveUln, abi: RECEIVE_ULN_ABI, functionName: 'commitVerification', args: [plan.header, plan.payloadHash], account: wallet.account, chain: wallet.chain, ...(await evmFeeOverrides(wallet)) });
 }
 
 export async function lzReceive(wallet: WalletClient, endpoint: Address, plan: DeliveryPlan, gas = 400_000n): Promise<Hex> {
   if (!wallet.account) throw new Error('no account');
-  return wallet.writeContract({ address: endpoint, abi: ENDPOINT_ABI, functionName: 'lzReceive', args: [plan.origin, plan.receiver, plan.guid, plan.message, '0x'], account: wallet.account, chain: wallet.chain, gas });
+  return wallet.writeContract({ address: endpoint, abi: ENDPOINT_ABI, functionName: 'lzReceive', args: [plan.origin, plan.receiver, plan.guid, plan.message, '0x'], account: wallet.account, chain: wallet.chain, gas, ...(await evmFeeOverrides(wallet)) });
 }
 // snippet:end deliverYourself
