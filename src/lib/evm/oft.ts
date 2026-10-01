@@ -2,8 +2,18 @@
  * EVM side of an OFT transfer. Same three calls as on Stellar: quoteOFT ->
  * quoteSend -> send, with the LayerZero fee passed as msg.value.
  */
-import type { Address, Hex, PublicClient, WalletClient } from 'viem';
+import { publicActions, type Address, type Hex, type PublicClient, type WalletClient } from 'viem';
 import { OFT_ABI } from '@/lib/evm/abi/oft';
+
+/**
+ * viem's writeContract does not simulate first. On Arbitrum a call that would revert makes MetaMask fall back
+ * to the block gas limit (2^50 gas), which shows up as a fee of tens of thousands of ETH. Simulating through
+ * the wallet's own provider surfaces the real revert reason (for example ERC20InsufficientBalance) instead.
+ */
+export function readableEvmError(e: unknown): Error {
+  const err = e as { shortMessage?: string; message?: string; cause?: { shortMessage?: string } };
+  return new Error(err.cause?.shortMessage ?? err.shortMessage ?? err.message ?? String(e));
+}
 
 export interface EvmSendParam {
   dstEid: number;
@@ -39,15 +49,21 @@ export async function evmQuoteSend(client: PublicClient, oft: Address, p: EvmSen
 export async function evmSend(wallet: WalletClient, oft: Address, p: EvmSendParam, nativeFee: bigint, refund: Address): Promise<Hex> {
   const account = wallet.account;
   if (!account) throw new Error('wallet has no account');
-  return wallet.writeContract({
-    address: oft,
-    abi: OFT_ABI,
-    functionName: 'send',
-    args: [tuple(p), { nativeFee, lzTokenFee: 0n }, refund],
-    value: nativeFee,
-    account,
-    chain: wallet.chain,
-  });
+  try {
+    // Simulate first so a revert reads as "ERC20InsufficientBalance", not as an absurd MetaMask gas estimate.
+    const { request } = await wallet.extend(publicActions).simulateContract({
+      address: oft,
+      abi: OFT_ABI,
+      functionName: 'send',
+      args: [tuple(p), { nativeFee, lzTokenFee: 0n }, refund],
+      value: nativeFee,
+      account,
+      chain: wallet.chain,
+    });
+    return await wallet.writeContract(request);
+  } catch (e) {
+    throw readableEvmError(e);
+  }
 }
 // snippet:end evmQuoteSend
 

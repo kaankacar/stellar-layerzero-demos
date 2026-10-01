@@ -15,7 +15,8 @@ import { Keypair, rpc, scValToNative } from '@stellar/stellar-sdk';
 import type { Address, Hex, PublicClient, WalletClient } from 'viem';
 import type { StellarEnv } from '@/config/networks';
 import { OFT_ABI } from '@/lib/evm/abi/oft';
-import { evmQuoteSend, evmSend, type EvmSendParam } from '@/lib/evm/oft';
+import { evmQuoteSend, evmSend, readableEvmError, type EvmSendParam } from '@/lib/evm/oft';
+import { publicActions } from 'viem';
 import { bytesToHex, hexToBytes } from '@/lib/hex';
 import { encodeLzComposeOption } from '@/lib/layerzero/options';
 import { fundWithFriendbot } from '@/lib/stellar/friendbot';
@@ -78,7 +79,13 @@ export const sendDeposit = (wallet: WalletClient, oft: Address, p: EvmSendParam,
 export async function evmFaucet(wallet: WalletClient, oft: Address): Promise<Hex> {
   const account = wallet.account;
   if (!account) throw new Error('wallet has no account');
-  return wallet.writeContract({ address: oft, abi: OFT_ABI, functionName: 'faucet', account, chain: wallet.chain });
+  try {
+    const { request } = await wallet.extend(publicActions).simulateContract({ address: oft, abi: OFT_ABI, functionName: 'faucet', account, chain: wallet.chain });
+    return await wallet.writeContract(request);
+  } catch (e) {
+    const err = readableEvmError(e);
+    throw /cooldown/i.test(err.message) ? new Error('faucet: one drip per address per hour; try again later') : err;
+  }
 }
 // snippet:end composeDeposit
 

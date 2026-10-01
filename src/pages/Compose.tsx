@@ -97,6 +97,8 @@ export function ComposePage() {
       if (noteBytes > MAX_NOTE_BYTES) throw new Error(`note is ${noteBytes} bytes; max ${MAX_NOTE_BYTES}`);
       const amount6 = parseUnits(amount || '0', 6);
       if (amount6 <= 0n) throw new Error('amount must be positive');
+      const held = await evmBalanceOf(publicClient(EVM_KEY), D.evm.oft, evm.address);
+      if (held < amount6) throw new Error(`you hold ${formatUnits(held, 6, 2)} ${MOCK_ASSET_CODE} on ${EVM.label}; use the faucet button first`);
       const p = depositParam(VAULT, amount6, note);
       console_.log('info', `SendParam: to = vault ${truncate(VAULT, 8, 6)} as bytes32, composeMsg = ${noteBytes} bytes, options: ${decodeOptions(p.extraOptions!).options.map(describeOption).join(', ')}`, undefined, { ...p, amountLD: p.amountLD.toString(), minAmountLD: '0' });
       const fee = await quoteDeposit(publicClient(EVM_KEY), D.evm.oft, p);
