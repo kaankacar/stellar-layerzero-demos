@@ -80,8 +80,9 @@ export async function evmFaucet(wallet: WalletClient, oft: Address): Promise<Hex
   const account = wallet.account;
   if (!account) throw new Error('wallet has no account');
   try {
-    const { request } = await wallet.extend(publicActions).simulateContract({ address: oft, abi: OFT_ABI, functionName: 'faucet', account, chain: wallet.chain });
-    return await wallet.writeContract({ ...request, ...(await evmFeeOverrides(wallet)) });
+    const fees = await evmFeeOverrides(wallet);
+    const { request } = await wallet.extend(publicActions).simulateContract({ address: oft, abi: OFT_ABI, functionName: 'faucet', account, chain: wallet.chain, ...fees });
+    return await wallet.writeContract(request);
   } catch (e) {
     const err = readableEvmError(e);
     throw /cooldown/i.test(err.message) ? new Error('faucet: one drip per address per hour; try again later') : err;

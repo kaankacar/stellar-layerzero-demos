@@ -65,6 +65,7 @@ export async function evmSend(wallet: WalletClient, oft: Address, p: EvmSendPara
   if (!account) throw new Error('wallet has no account');
   try {
     // Simulate first so a revert reads as "ERC20InsufficientBalance", not as an absurd MetaMask gas estimate.
+    const fees = await evmFeeOverrides(wallet);
     const { request } = await wallet.extend(publicActions).simulateContract({
       address: oft,
       abi: OFT_ABI,
@@ -73,8 +74,9 @@ export async function evmSend(wallet: WalletClient, oft: Address, p: EvmSendPara
       value: nativeFee,
       account,
       chain: wallet.chain,
+      ...fees,
     });
-    return await wallet.writeContract({ ...request, ...(await evmFeeOverrides(wallet)) });
+    return await wallet.writeContract(request);
   } catch (e) {
     throw readableEvmError(e);
   }
