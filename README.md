@@ -10,6 +10,7 @@ Every page has the same shape: a **"What's happening here?"** explainer with a d
 
 > **USDT0 does not exist on Stellar testnet.** It is mainnet-only. Any asset called "USDT0" on testnet is someone's mock.
 > The **LayerZero endpoint is live on testnet** (EID 40600), so cross-chain messaging and custom test OFTs work there.
+> This repository is an independent developer demo. It is not affiliated with, or endorsed by, Tether, Everdawn Labs or LayerZero Labs.
 
 The site therefore splits into two modes, shown by a persistent badge on every page:
 
@@ -28,8 +29,8 @@ The site therefore splits into two modes, shown by a persistent badge on every p
 | 4 | **Fee & Quote Explorer** | `quote_oft` and `quote_send` on-chain (no API key), the two fees and their units, a five-chain comparison chart, and the Transfer API as a bring-your-own-key panel. |
 | 5 | **Testnet OFT Playground** | Fund with Friendbot, trustline + faucet mint of the mock **tUSDT0** (a testnet copy of USDT0's setup: locked issuer, SAC-manager admin, `MintBurn` OFT), the wiring (`set_peer`, enforced options, `set_config` DVN override), then send it Stellar → Sepolia (Freighter) and back (MetaMask), tracking each message to delivery, with every XDR/calldata logged. |
 | 6 | **Cross-Chain Postcards** | Raw LayerZero messaging with no tokens: a 140-byte postcard from Stellar lands in a Sepolia contract (and back), rendered on a wall with pixel-art stamps from the message GUID. |
-| 8 | **Launch your own omnichain token** | A guided, wallet-signed launch on testnet: throwaway issuer → SAC → SAC-manager → trustline + mint → hand off admin → OFT (MintBurn or LockUnlock) → MINTER_ROLE → lock issuer → Sepolia OFT with MetaMask → peers, enforced options, DVN config on both sides → bridge it. Progress persists in the browser. |
 | 7 | **Omnichain Dashboard** | Live ticker of USDT0 messages in/out of Stellar, wired-peer graph, current supply and a derived 7-day trajectory, linking to the Dune dashboard for the long view. |
+| 8 | **Launch your own omnichain token** | A guided, wallet-signed launch on testnet: throwaway issuer → SAC → SAC-manager → trustline + mint → hand off admin → OFT (MintBurn or LockUnlock) → MINTER_ROLE → lock issuer → Sepolia OFT with MetaMask → peers, enforced options, DVN config on both sides → bridge it. Progress persists in the browser. |
 | 9 | **Compose: MetaMask drives a Soroban vault** | A Stellar application for users who only hold an EVM wallet. `OFT.send` from MetaMask on Arbitrum Sepolia names a Soroban vault as the recipient and carries a `composeMsg`; on Stellar the OFT mints to the vault and queues a compose, and `lz_compose` (executor or anyone) credits the sender's EVM address. Withdrawals to any G or C address are authorized by a MetaMask `personal_sign` signature that the contract verifies with `secp256k1_recover`; a Friendbot-funded throwaway key pays the Stellar fee. |
 
 ## Architecture

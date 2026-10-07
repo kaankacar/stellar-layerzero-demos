@@ -89,7 +89,7 @@ export function ExplainerPage() {
         </p>
         <MessageHop />
         <Callout tone="mainnet" title="USDT0's real configuration (read live on the Inspector page)">
-          <p>Stellar → Ethereum requires LayerZero Labs, Canary and the USDT0 DVN, with 320 Stellar confirmations. The executor is paid to spend 80,000 gas on Ethereum's <code>lzReceive</code>; the Ethereum adapter budgets 500,000 “gas” for delivery on Stellar. The registry lists five DVN operators on Stellar; USDT0 chose three.</p>
+          <p>Stellar → Ethereum requires LayerZero Labs, Canary and the USDT0 DVN, with 320 Stellar confirmations. The executor is paid to spend 80,000 gas on Ethereum's <code>lzReceive</code>; the Ethereum adapter budgets 500,000 “gas” for delivery on Stellar. The registry listed seven DVN operators on Stellar on 29 September 2026; USDT0 requires three. The Inspector reads the live count.</p>
         </Callout>
       </Step>
 

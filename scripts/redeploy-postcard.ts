@@ -1,15 +1,15 @@
 /**
  * Redeploy the Stellar PostcardOApp from the current contracts/wasm/postcard_oapp.wasm
- * and re-wire it (Stellar peer/options/ULN config + the Sepolia PostcardOApp's peer).
- * Used after fixing the contract; keeps the Sepolia side.
+ * and re-wire it (Stellar peer/options/ULN config + the EVM PostcardOApp's peer).
+ * Used after fixing the contract; keeps the EVM side (the deployment's chain, EVM_TESTNET overrides).
  */
 import { Keypair } from '@stellar/stellar-sdk';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createPublicClient, createWalletClient, http, type Address, type Hex } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { sepolia } from 'viem/chains';
-import { EVM_TESTNETS } from '../src/config/networks';
+import { EVM_TESTNETS, type EvmTestnetKey } from '../src/config/networks';
+import { VIEM_CHAINS } from '../src/lib/evm/chains';
 import { STELLAR_FALLBACK } from '../src/config/layerzero.fallback';
 import { sc } from '../src/lib/stellar/scval';
 import { encodeLzReceiveOption } from '../src/lib/layerzero/options';
@@ -27,7 +27,8 @@ const deployer = Keypair.fromSecret(envVar('STELLAR_DEPLOYER_SECRET')!);
 const { endpointV2: ENDPOINT, sendUln302: ULN } = STELLAR_FALLBACK.testnet;
 const DVN: string = dep.registry.activeDvn;
 const evmPostcard = dep.evm.postcard as Address;
-const eid = EVM_TESTNETS.sepolia.eid;
+const evmKey = (envVar('EVM_TESTNET') as EvmTestnetKey | undefined) ?? (dep.evm?.chainKey as EvmTestnetKey | undefined) ?? 'arbitrum-sepolia';
+const eid = EVM_TESTNETS[evmKey].eid;
 
 const wasmHash = await uploadWasm(resolve(ROOT, 'contracts/wasm/postcard_oapp.wasm'), deployer);
 const { contractId: postcard } = await deployContract(wasmHash, deployer, [sc.address(deployer.publicKey()), sc.address(ENDPOINT), sc.address(deployer.publicKey())]);
@@ -38,13 +39,13 @@ const config = encodeOAppUlnConfig(requiredDvnsOverride([DVN]));
 await invoke(ENDPOINT, 'set_config', [sc.address(deployer.publicKey()), sc.address(postcard), sc.address(ULN), sc.vec([setConfigParamScVal({ eid, configType: CONFIG_TYPE.SEND_ULN, config }), setConfigParamScVal({ eid, configType: CONFIG_TYPE.RECEIVE_ULN, config })])], deployer);
 
 const account = privateKeyToAccount(envVar('EVM_DEPLOYER_PRIVATE_KEY') as Hex);
-const rpc = envVar('EVM_RPC_URL') ?? EVM_TESTNETS.sepolia.rpcUrl;
-const pub = createPublicClient({ chain: sepolia, transport: http(rpc) });
-const wallet = createWalletClient({ account, chain: sepolia, transport: http(rpc) });
+const rpc = envVar('EVM_RPC_URL') ?? EVM_TESTNETS[evmKey].rpcUrl;
+const pub = createPublicClient({ chain: VIEM_CHAINS[evmKey], transport: http(rpc) });
+const wallet = createWalletClient({ account, chain: VIEM_CHAINS[evmKey], transport: http(rpc) });
 const peerAbi = [{ type: 'function', name: 'setPeer', stateMutability: 'nonpayable', inputs: [{ name: '_eid', type: 'uint32' }, { name: '_peer', type: 'bytes32' }], outputs: [] }] as const;
 const h = await wallet.writeContract({ address: evmPostcard, abi: peerAbi, functionName: 'setPeer', args: [40600, stellarAddressToHex(postcard)] });
 await pub.waitForTransactionReceipt({ hash: h });
-log(`Sepolia PostcardOApp.setPeer(40600, new) tx ${h}`);
+log(`${EVM_TESTNETS[evmKey].label} PostcardOApp.setPeer(40600, new) tx ${h}`);
 
 dep.stellar.postcard = postcard;
 dep.stellar.postcardHex = bytesToHex(stellarAddressToBytes32(postcard));

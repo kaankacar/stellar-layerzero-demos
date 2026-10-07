@@ -2,15 +2,16 @@
  * End-to-end proof of the Launchpad code path with script keys: the exact
  * functions the /launch page calls, in the same order, with the Stellar
  * deployer as the wallet and the EVM deployer as MetaMask. Then one transfer
- * Stellar -> Sepolia, delivered permissionlessly, and a balance check.
+ * Stellar -> the deployment's EVM testnet (Arbitrum Sepolia since 2026-09-29; EVM_TESTNET=sepolia
+ * overrides it), delivered permissionlessly, and a balance check.
  *
  *   pnpm exec tsx --tsconfig tsconfig.node.json scripts/e2e-launchpad.ts [CODE] [LockUnlock|MintBurn]
  */
 import { Keypair } from '@stellar/stellar-sdk';
 import { createPublicClient, createWalletClient, http, type Hex } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { sepolia } from 'viem/chains';
-import { EVM_TESTNETS } from '../src/config/networks';
+import { EVM_TESTNETS, type EvmTestnetKey } from '../src/config/networks';
+import { VIEM_CHAINS } from '../src/lib/evm/chains';
 import { EVM_TESTNET_FALLBACK, STELLAR_FALLBACK } from '../src/config/layerzero.fallback';
 import { TESTNET_DEPLOYMENT } from '../src/config/testnet';
 import { deployEvmOft, evmSetEnforced, evmSetPeer, handOffSacAdmin, lockIssuer, mintByPayment, oftArgs, prepareDeployFromWasm, prepareGrantMinter, prepareSetEnforced, prepareSetPeer, prepareUlnConfig, sacManagerArgs, WASM_HASHES } from '../src/lib/launchpad/actions';
@@ -31,9 +32,11 @@ const mode = (process.argv[3] as OftMode | undefined) ?? 'LockUnlock';
 const owner = Keypair.fromSecret(envVar('STELLAR_DEPLOYER_SECRET')!);
 const issuer = Keypair.random();
 const evmAccount = privateKeyToAccount(envVar('EVM_DEPLOYER_PRIVATE_KEY') as Hex);
-const rpc = envVar('EVM_RPC_URL') ?? EVM_TESTNETS.sepolia.rpcUrl;
-const pub = createPublicClient({ chain: sepolia, transport: http(rpc) });
-const wallet = createWalletClient({ account: evmAccount, chain: sepolia, transport: http(rpc) });
+const evmKey = (envVar('EVM_TESTNET') as EvmTestnetKey | undefined) ?? TESTNET_DEPLOYMENT.evm?.chainKey ?? 'arbitrum-sepolia';
+const evm = EVM_TESTNETS[evmKey];
+const rpc = envVar('EVM_RPC_URL') ?? evm.rpcUrl;
+const pub = createPublicClient({ chain: VIEM_CHAINS[evmKey], transport: http(rpc) });
+const wallet = createWalletClient({ account: evmAccount, chain: VIEM_CHAINS[evmKey], transport: http(rpc) });
 const ENDPOINT = STELLAR_FALLBACK.testnet.endpointV2;
 const ULN = STELLAR_FALLBACK.testnet.sendUln302;
 const DVN = TESTNET_DEPLOYMENT.registry?.activeDvn ?? Object.values(STELLAR_FALLBACK.testnet.dvns).find((d) => !d.deprecated)!.strkey;
@@ -73,22 +76,22 @@ if (mode === 'MintBurn') {
 await lockIssuer(issuer);
 step('issuer locked');
 // 10. EVM OFT
-const { address: evmOft } = await deployEvmOft(wallet, pub, `${code} (launch e2e)`, code, EVM_TESTNET_FALLBACK.sepolia.endpointV2);
-step(`Sepolia OFT ${evmOft}`);
+const { address: evmOft } = await deployEvmOft(wallet, pub, `${code} (launch e2e)`, code, EVM_TESTNET_FALLBACK[evmKey].endpointV2);
+step(`${evm.label} OFT ${evmOft}`);
 // 11. EVM wiring
 await evmSetPeer(wallet, pub, evmOft, stellarAddressToHex(oft));
 await evmSetEnforced(wallet, pub, evmOft);
-step('Sepolia setPeer + setEnforcedOptions');
+step(`${evm.label} setPeer + setEnforcedOptions`);
 // 12. Stellar wiring
-await signAndSubmit((await prepareSetPeer(owner.publicKey(), oft, 40161, evmOft)).tx, owner);
-await signAndSubmit((await prepareSetEnforced(owner.publicKey(), oft, 40161)).tx, owner);
-await signAndSubmit((await prepareUlnConfig(owner.publicKey(), ENDPOINT, oft, ULN, 40161, DVN)).tx, owner);
+await signAndSubmit((await prepareSetPeer(owner.publicKey(), oft, evm.eid, evmOft)).tx, owner);
+await signAndSubmit((await prepareSetEnforced(owner.publicKey(), oft, evm.eid)).tx, owner);
+await signAndSubmit((await prepareUlnConfig(owner.publicKey(), ENDPOINT, oft, ULN, evm.eid, DVN)).tx, owner);
 step('Stellar set_peer + set_enforced_options + set_config');
 const facts = await getOftFacts('testnet', oft);
 log(`oft_type = ${facts.oftType.variant}, endpoint ok = ${facts.endpoint === ENDPOINT}`);
 
-// 13. send 7 tokens Stellar -> Sepolia
-const param = { dstEid: 40161, to: evmAddressToBytes32(evmAccount.address), amountLd: 7n * 10n ** 7n, minAmountLd: 0n, extraOptions: new Uint8Array() };
+// 13. send 7 tokens Stellar -> the EVM testnet
+const param = { dstEid: evm.eid, to: evmAddressToBytes32(evmAccount.address), amountLd: 7n * 10n ** 7n, minAmountLd: 0n, extraOptions: new Uint8Array() };
 const q = await quoteOft('testnet', oft, owner.publicKey(), param);
 const f = await quoteSend('testnet', oft, owner.publicKey(), param, false);
 const prepared = await prepareOftSend('testnet', oft, owner.publicKey(), { ...param, minAmountLd: q.value.receipt.amountReceivedLd }, f.value, owner.publicKey());
@@ -100,7 +103,7 @@ if (mode === 'LockUnlock') log(`locked in OFT: ${(await getTokenBalance('testnet
 const packet = (await findPacketSent('testnet', sent.hash))!;
 const plan = planFromPacket(packet);
 log(`guid ${plan.guid} -> https://testnet.layerzeroscan.com/tx/${plan.guid}`);
-const fb = EVM_TESTNET_FALLBACK.sepolia;
+const fb = EVM_TESTNET_FALLBACK[evmKey];
 const deadline = Date.now() + 40 * 60_000;
 while (Date.now() < deadline) {
   const state = await executionState(pub, fb.endpointV2, plan);
@@ -120,6 +123,6 @@ while (Date.now() < deadline) {
   await new Promise((r) => setTimeout(r, 15_000));
 }
 const bal = await pub.readContract({ address: evmOft, abi: OFT_ABI, functionName: 'balanceOf', args: [evmAccount.address] });
-log(`Sepolia ${code} balance: ${bal.toString()} (6 dec) → ${bal === 7_000_000n ? 'OK: 7 tokens arrived' : 'MISMATCH'}`);
+log(`${evm.label} ${code} balance: ${bal.toString()} (6 dec) → ${bal === 7_000_000n ? 'OK: 7 tokens arrived' : 'MISMATCH'}`);
 if (bal !== 7_000_000n) warn('delivery not observed within 40 minutes');
 process.exit(bal === 7_000_000n ? 0 : 1);
