@@ -11,3 +11,6 @@ target/
 .DS_Store
 scripts/.state/
 .lz-build/
+
+# Field note raw video clips (large WebM); the stills are committed
+docs/field-note/clips/

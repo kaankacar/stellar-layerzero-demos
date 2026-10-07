@@ -292,7 +292,9 @@ if (state.stellar?.oft && state.stellar.postcard && state.evm?.oft && state.evm.
   if (!W.stellarEnforced) {
     for (const [stellarOApp] of pairs) {
       const current = await getEnforcedOptions('testnet', stellarOApp, evmCfg.eid, 1);
-      const want = encodeLzReceiveOption(200_000n);
+      // 200k covers an OFT mint. The postcard writes a five-field struct with a string, which does not fit:
+      // the executor's simulation reverted with empty data on Arbitrum Sepolia (2026-10-07). 500k like the EVM side.
+      const want = encodeLzReceiveOption(stellarOApp === state.stellar!.postcard ? 500_000n : 200_000n);
       if (current?.toLowerCase() !== want.toLowerCase()) {
         await invoke(stellarOApp, 'set_enforced_options', [sc.vec([sc.struct({ eid: sc.u32(evmCfg.eid), msg_type: sc.u32(1), options: sc.bytes(hexToBytes(want)) })]), sc.address(deployer.publicKey())], deployer);
       }

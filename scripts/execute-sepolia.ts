@@ -27,11 +27,11 @@ const packet = await findPacketSent('testnet', txHash);
 if (!packet) throw new Error('no packet_sent event found in that transaction');
 const plan = planFromPacket(packet);
 log(`guid ${plan.guid} nonce ${plan.origin.nonce} -> receiver ${plan.receiver} on eid ${packet.dstEid}`);
-if (packet.dstEid !== 40161) throw new Error(`this script only handles Sepolia (40161), got ${packet.dstEid}`);
 
 const account = privateKeyToAccount(envVar('EVM_DEPLOYER_PRIVATE_KEY') as Hex);
 const deployed = JSON.parse(readFileSync(resolve(ROOT, 'src/config/testnet-deployment.json'), 'utf8')) as { evm: { chainKey: EvmTestnetKey } | null };
 const evmKey = (envVar('EVM_TESTNET') as EvmTestnetKey | undefined) ?? deployed.evm?.chainKey ?? 'arbitrum-sepolia';
+if (packet.dstEid !== EVM_TESTNETS[evmKey].eid) throw new Error(`destination eid ${packet.dstEid} is not ${EVM_TESTNETS[evmKey].label} (${EVM_TESTNETS[evmKey].eid}); set EVM_TESTNET`);
 const rpc = envVar('EVM_RPC_URL') ?? EVM_TESTNETS[evmKey].rpcUrl;
 const pub = createPublicClient({ chain: VIEM_CHAINS[evmKey], transport: http(rpc) });
 const wallet = createWalletClient({ account, chain: VIEM_CHAINS[evmKey], transport: http(rpc) });

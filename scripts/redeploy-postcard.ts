@@ -34,7 +34,7 @@ const wasmHash = await uploadWasm(resolve(ROOT, 'contracts/wasm/postcard_oapp.wa
 const { contractId: postcard } = await deployContract(wasmHash, deployer, [sc.address(deployer.publicKey()), sc.address(ENDPOINT), sc.address(deployer.publicKey())]);
 log(`new PostcardOApp ${postcard}`);
 await invoke(postcard, 'set_peer', [sc.u32(eid), sc.bytes(evmAddressToBytes32(evmPostcard)), sc.address(deployer.publicKey())], deployer);
-await invoke(postcard, 'set_enforced_options', [sc.vec([sc.struct({ eid: sc.u32(eid), msg_type: sc.u32(1), options: sc.bytes(hexToBytes(encodeLzReceiveOption(200_000n))) })]), sc.address(deployer.publicKey())], deployer);
+await invoke(postcard, 'set_enforced_options', [sc.vec([sc.struct({ eid: sc.u32(eid), msg_type: sc.u32(1), options: sc.bytes(hexToBytes(encodeLzReceiveOption(500_000n))) })]), sc.address(deployer.publicKey())], deployer);
 const config = encodeOAppUlnConfig(requiredDvnsOverride([DVN]));
 await invoke(ENDPOINT, 'set_config', [sc.address(deployer.publicKey()), sc.address(postcard), sc.address(ULN), sc.vec([setConfigParamScVal({ eid, configType: CONFIG_TYPE.SEND_ULN, config }), setConfigParamScVal({ eid, configType: CONFIG_TYPE.RECEIVE_ULN, config })])], deployer);
 
