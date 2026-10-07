@@ -1,0 +1,90 @@
+# USDT0 mainnet recon, read-only. CLI stellar 26.0.0 (60f7458e7ecffddf2f2d91dc6d0d2db4fab03ecc). RPC https://mainnet.sorobanrpc.com
+
+[2026-10-07T14:09:56Z] ## 1. Issuer account flags, home_domain, thresholds, signers (Horizon)
+{
+ "flags": {
+  "auth_required": false,
+  "auth_revocable": true,
+  "auth_immutable": false,
+  "auth_clawback_enabled": true
+ },
+ "home_domain": null,
+ "thresholds": {
+  "low_threshold": 0,
+  "med_threshold": 0,
+  "high_threshold": 0
+ },
+ "signers": [
+  {
+   "weight": 0,
+   "key": "GATISXX6BZ6NC7IKQBY37CJD4SOZL3CYZJWXEDG6JVIY4WBS6KXJHN6Q",
+   "type": "ed25519_public_key"
+  }
+ ],
+ "last_modified": "2026-07-26T20:50:21Z"
+}
+
+[2026-10-07T14:09:56Z] ## 2. SAC derivation must match the published address
+derived CBSJZEIO5C7KC2SF3MKSNXXJSW5G3VTNBX4ATMKUI3B2MR4JKM4R26YF
+MATCH
+
+[2026-10-07T14:09:56Z] ## 3. SAC metadata and admin
+decimals: 7
+name: "USDT0:GATISXX6BZ6NC7IKQBY37CJD4SOZL3CYZJWXEDG6JVIY4WBS6KXJHN6Q"
+symbol: "USDT0"
+admin: "CA3GUWLOS3QKN6WNRAELSUDSKLDTVTWEDJ3KLGAJG3SIWGA5L3KZYWGJ"
+
+[2026-10-07T14:10:01Z] ## 4. OFT wiring
+token: "CBSJZEIO5C7KC2SF3MKSNXXJSW5G3VTNBX4ATMKUI3B2MR4JKM4R26YF"
+shared_decimals: 6
+decimal_conversion_rate: "10"
+oft_type: {"MintBurn":"CA3GUWLOS3QKN6WNRAELSUDSKLDTVTWEDJ3KLGAJG3SIWGA5L3KZYWGJ"}
+endpoint: "CCQLLRE5JBAWYCW3KTWOIWLMFDUOKROQVZNSALQMGOSXNW3ERUOWTZGK"
+is_paused: false
+endpoint eid: 30600
+
+[2026-10-07T14:10:08Z] ## 5. Peers (null = not wired)
+peer(30101): "0000000000000000000000006c96de32cea08842dcc4058c14d3aaad7fa41dee"
+peer(30110): "00000000000000000000000014e4a1b13bf7f943c8ff7c51fb60fa964a298d92"
+peer(30111): "000000000000000000000000f03b4d9ac1d5d1e7c4cef54c2a313b9fe051a0ad"
+peer(30109): "0000000000000000000000006ba10300f0dc58b7a1e4c0e41f5dabb7d7829e13"
+peer(30184): null
+peer(30102): null
+peer(30383): "00000000000000000000000002ca37966753bdddf11216b73b16c1de756a7cf9"
+
+[2026-10-07T14:10:16Z] ## 6. Route config toward Ethereum (30101)
+effective_fee_bps(30101): 0
+enforced_options(30101, msg_type 1): "00030100110100000000000000000000000000013880"
+rate_limit_config(Outbound, 30101): null
+effective_send_uln_config(OFT, 30101): {"confirmations":320,"optional_dvn_threshold":0,"optional_dvns":[],"required_dvns":["CB5HHSB4RB7JOIVAWH3TKPXH76ZBNPIKHAHZQEHIPA4D4C3UR57KZRRD","CBYZZA7V2Y2SKCSAUNS62SPVZ4LGU4WL3A6E4QQ5YYOD2PGT3BEBLFNS","CDVKLVPE4P7BH5IQY5IFCF5YE6G43VHDG35FPO24IDV24IO5H7WGRYAN"]}
+
+[2026-10-07T14:10:20Z] ## 7. Dust: quote_oft with 1.0000001 USDT0 (10000001 stroops) and a zero floor
+[{"max_amount_ld":"18446744073709551615","min_amount_ld":"0"},[],{"amount_received_ld":"10000000","amount_sent_ld":"10000000"}]
+
+[2026-10-07T14:10:21Z] ## 8. Messaging fee in XLM stroops for 5 USDT0 to each wired EVM chain
+quote_send(30101): {"native_fee":"122025106","zro_fee":"0"}
+quote_send(30110): {"native_fee":"4517986","zro_fee":"0"}
+quote_send(30111): {"native_fee":"12352726","zro_fee":"0"}
+quote_send(30109): {"native_fee":"3195634","zro_fee":"0"}
+
+[2026-10-07T14:10:27Z] ## 9. Asset stats (Horizon /assets)
+{
+ "accounts": {
+  "authorized": 25694,
+  "authorized_to_maintain_liabilities": 0,
+  "unauthorized": 0
+ },
+ "balances": {
+  "authorized": "2809628.3118955",
+  "authorized_to_maintain_liabilities": "0.0000000",
+  "unauthorized": "0.0000000"
+ },
+ "num_claimable_balances": 2,
+ "num_contracts": 25,
+ "contracts_amount": "2972287.3130985"
+}
+
+[2026-10-07T14:10:28Z] ## 10. Recent USDT0 messages leaving Stellar (LayerZero Scan, last 20)
+20 messages fetched, 11 from the USDT0 OFT; newest unix ts 1791381507
+
+[2026-10-07T14:10:28Z] done

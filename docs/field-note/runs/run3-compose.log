@@ -1,0 +1,146 @@
+# Run 3: pnpm e2e:compose (deposit 5 tUSDT0 + note from Arbitrum Sepolia into the ComposerVault, lz_compose, withdraw 2 by personal_sign), started 2026-10-07T14:12:12Z
+[2026-10-07T14:12:15Z] $ tsx --tsconfig tsconfig.node.json scripts/e2e-compose.ts
+[2026-10-07T14:12:15Z] [1;34m[deploy][0m vault CD2LRGWZT7DJ4CMYDA56VKTWYYBUFE3G6OVXAMOSTLAYMA6UN3BDE4RV: 2 deposits, holds 5030000000 stroops; 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 balance 30000000 nonce 1
+[2026-10-07T14:12:15Z] [1;34m[deploy][0m quoteSend(SEND_AND_CALL) nativeFee 31756706288894 wei; note "compose from Arbitrum Sepolia @ 2026-10-07T14:12"
+[2026-10-07T14:12:15Z] /Users/kaankacar/usdt0test/src/lib/evm/oft.ts:29
+[2026-10-07T14:12:15Z]   return new Error(err.cause?.shortMessage ?? err.shortMessage ?? err.message ?? String(e));
+[2026-10-07T14:12:15Z]          ^
+[2026-10-07T14:12:15Z] 
+[2026-10-07T14:12:15Z] Error: The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.
+[2026-10-07T14:12:15Z] 
+[2026-10-07T14:12:15Z] Node.js v24.15.0
+[2026-10-07T14:12:15Z] [ELIFECYCLE] Command failed with exit code 1.
+# finished 2026-10-07T14:12:15Z exit 1
+[2026-10-07T14:17:35.496Z] arb-sepolia-funding: Arbitrum Sepolia balance was 0.0000012 ETH, so pnpm e2e:compose failed with "total cost exceeds the balance". Bridging 0.004 Sepolia ETH through Inbox.depositEth()
+file:///Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/_esm/utils/errors/getTransactionError.js:11
+    return new TransactionExecutionError(cause, {
+           ^
+
+TransactionExecutionError: Request exceeds defined limit.
+
+URL: https://sepolia.gateway.tenderly.co
+Request body: {"method":"eth_sendRawTransaction","params":["0x02f87783aa36a717830f4240830f42588302faac94aae29b0366299461418f5324a79afc425be5ae21870e35fa931a000084439370b1c080a0ffa9255ccb274452a126a9b89c78dc112c45e9eaa3eed1bdd9b97ea717e97974a02727ffab26e203e31c3695396826abb81c2fb55186e7abfb14e759e9a4d5ff29"]}
+ 
+Request Arguments:
+  from:   0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85
+  to:     0xaAe29B0366299461418F5324a79Afc425BE5ae21
+  value:  0.004 ETH
+  data:   0x439370b1
+
+Details: rate limit exceeded
+Version: viem@2.56.3
+  cause: LimitExceededRpcError: Request exceeds defined limit.
+  
+  URL: https://sepolia.gateway.tenderly.co
+  Request body: {"method":"eth_sendRawTransaction","params":["0x02f87783aa36a717830f4240830f42588302faac94aae29b0366299461418f5324a79afc425be5ae21870e35fa931a000084439370b1c080a0ffa9255ccb274452a126a9b89c78dc112c45e9eaa3eed1bdd9b97ea717e97974a02727ffab26e203e31c3695396826abb81c2fb55186e7abfb14e759e9a4d5ff29"]}
+  
+  Details: rate limit exceeded
+  Version: viem@2.56.3
+      at withRetry.delay.count.count (file:///Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/_esm/utils/buildRequest.js:73:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async attemptRetry (file:///Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/_esm/utils/promise/withRetry.js:24:30) {
+    details: 'rate limit exceeded',
+    docsPath: undefined,
+    metaMessages: [
+      'URL: https://sepolia.gateway.tenderly.co',
+      'Request body: {"method":"eth_sendRawTransaction","params":["0x02f87783aa36a717830f4240830f42588302faac94aae29b0366299461418f5324a79afc425be5ae21870e35fa931a000084439370b1c080a0ffa9255ccb274452a126a9b89c78dc112c45e9eaa3eed1bdd9b97ea717e97974a02727ffab26e203e31c3695396826abb81c2fb55186e7abfb14e759e9a4d5ff29"]}'
+    ],
+    shortMessage: 'Request exceeds defined limit.',
+    version: '2.56.3',
+    code: -32005,
+    [cause]: RpcRequestError: RPC Request failed.
+    
+    URL: https://sepolia.gateway.tenderly.co
+    Request body: {"method":"eth_sendRawTransaction","params":["0x02f87783aa36a717830f4240830f42588302faac94aae29b0366299461418f5324a79afc425be5ae21870e35fa931a000084439370b1c080a0ffa9255ccb274452a126a9b89c78dc112c45e9eaa3eed1bdd9b97ea717e97974a02727ffab26e203e31c3695396826abb81c2fb55186e7abfb14e759e9a4d5ff29"]}
+    
+    Details: rate limit exceeded
+    Version: viem@2.56.3
+        at request (file:///Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/_esm/clients/transports/http.js:73:27)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async withRetry.delay.count.count (file:///Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/_esm/utils/buildRequest.js:30:24)
+        at async attemptRetry (file:///Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/_esm/utils/promise/withRetry.js:24:30) {
+      details: 'rate limit exceeded',
+      docsPath: undefined,
+      metaMessages: [
+        'URL: https://sepolia.gateway.tenderly.co',
+        'Request body: {"method":"eth_sendRawTransaction","params":["0x02f87783aa36a717830f4240830f42588302faac94aae29b0366299461418f5324a79afc425be5ae21870e35fa931a000084439370b1c080a0ffa9255ccb274452a126a9b89c78dc112c45e9eaa3eed1bdd9b97ea717e97974a02727ffab26e203e31c3695396826abb81c2fb55186e7abfb14e759e9a4d5ff29"]}'
+      ],
+      shortMessage: 'RPC Request failed.',
+      version: '2.56.3',
+      code: -32005,
+      data: undefined,
+      url: 'https://sepolia.gateway.tenderly.co',
+      [cause]: { code: -32005, message: 'rate limit exceeded' }
+    }
+  },
+  details: 'rate limit exceeded',
+  docsPath: undefined,
+  metaMessages: [
+    'URL: https://sepolia.gateway.tenderly.co',
+    'Request body: {"method":"eth_sendRawTransaction","params":["0x02f87783aa36a717830f4240830f42588302faac94aae29b0366299461418f5324a79afc425be5ae21870e35fa931a000084439370b1c080a0ffa9255ccb274452a126a9b89c78dc112c45e9eaa3eed1bdd9b97ea717e97974a02727ffab26e203e31c3695396826abb81c2fb55186e7abfb14e759e9a4d5ff29"]}',
+    ' ',
+    'Request Arguments:',
+    '  from:   0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85\n' +
+      '  to:     0xaAe29B0366299461418F5324a79Afc425BE5ae21\n' +
+      '  value:  0.004 ETH\n' +
+      '  data:   0x439370b1'
+  ],
+  shortMessage: 'Request exceeds defined limit.',
+  version: '2.56.3'
+}
+
+Node.js v24.15.0
+[2026-10-07T14:18:22.854Z] arb-sepolia-funding: retry via publicnode (Tenderly answered "Request exceeds defined limit" on the first attempt)
+[2026-10-07T14:18:23.310Z] arb-sepolia-funding: Inbox.depositEth(0.004 ETH) L1 tx https://sepolia.etherscan.io/tx/0x98f6c6a51694aefb1615da96117f42d3592941feaa82eee607bd34a447a0db91
+[2026-10-07T14:18:40.126Z] arb-sepolia-funding: reverted in block 11863535; L2 credit expected in 10 to 15 minutes
+[2026-10-07T14:20:57.475Z] arb-sepolia-funding: the forced 120k gas limit reverted (value refunded, balance now 0.008077984544132273 ETH). Simulating and estimating first this time.
+[2026-10-07T14:20:57.600Z] arb-sepolia-funding: simulation ok, estimateGas 195244
+[2026-10-07T14:20:57.723Z] arb-sepolia-funding: Inbox.depositEth(0.004 ETH) L1 tx https://sepolia.etherscan.io/tx/0xa2d36a11324dcb70bdd40bcb5e66f59e9b45b4752b67f1c655cf205c38c3f7ff
+[2026-10-07T14:21:02.085Z] arb-sepolia-funding: success in block 11863547, gas used 189894; L2 credit expected in 10 to 15 minutes
+[2026-10-07T14:22:17Z] waiting for the L2 credit of the 0.004 ETH deposit (L1 tx 0xa2d36a11…)
+[2026-10-07T14:32:24Z] Arbitrum Sepolia balance now 4001248767904000 wei after 620 s
+# Run 3, second attempt: pnpm e2e:compose started 2026-10-07T14:32:24Z
+[2026-10-07T14:32:27Z] $ tsx --tsconfig tsconfig.node.json scripts/e2e-compose.ts
+[2026-10-07T14:32:27Z] [1;34m[deploy][0m vault CD2LRGWZT7DJ4CMYDA56VKTWYYBUFE3G6OVXAMOSTLAYMA6UN3BDE4RV: 2 deposits, holds 5030000000 stroops; 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 balance 30000000 nonce 1
+[2026-10-07T14:32:27Z] [1;34m[deploy][0m quoteSend(SEND_AND_CALL) nativeFee 31756706288894 wei; note "compose from Arbitrum Sepolia @ 2026-10-07T14:32"
+[2026-10-07T14:32:27Z] /Users/kaankacar/usdt0test/src/lib/evm/oft.ts:29
+[2026-10-07T14:32:27Z]   return new Error(err.cause?.shortMessage ?? err.shortMessage ?? err.message ?? String(e));
+[2026-10-07T14:32:27Z]          ^
+[2026-10-07T14:32:27Z] 
+[2026-10-07T14:32:27Z] Error: The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.
+[2026-10-07T14:32:27Z] 
+[2026-10-07T14:32:27Z] Node.js v24.15.0
+[2026-10-07T14:32:27Z] [ELIFECYCLE] Command failed with exit code 1.
+# finished 2026-10-07T14:32:27Z exit 1
+ALL DONE 2026-10-07T14:32:30Z
+# Run 3, third attempt 2026-10-07T14:34:34Z: after fixing the simulate call (no fee fields in eth_call), pnpm e2e:compose
+[2026-10-07T14:39:19Z] $ tsx --tsconfig tsconfig.node.json scripts/e2e-compose.ts
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m vault CD2LRGWZT7DJ4CMYDA56VKTWYYBUFE3G6OVXAMOSTLAYMA6UN3BDE4RV: 2 deposits, holds 5030000000 stroops; 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 balance 30000000 nonce 1
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m quoteSend(SEND_AND_CALL) nativeFee 31756706288894 wei; note "compose from Arbitrum Sepolia @ 2026-10-07T14:34"
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m deposit tx 0x02b78681adabc61efda81fb930d78071f4f78dc7e4135e5db4a09ca142447cb0 -> https://testnet.layerzeroscan.com/tx/0x02b78681adabc61efda81fb930d78071f4f78dc7e4135e5db4a09ca142447cb0
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   scan: not indexed yet
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   scan: INFLIGHT (Source transaction sent)
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   scan: INFLIGHT (Ready for DVNs to verify)
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   scan: INFLIGHT (Ready for committer to commit verification)
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   scan: CONFIRMING (Executor waiting for finality) dst tx b007d84f0a6969dc28c6cda190d8dfe007836822faf19bd1cb316ef8ffa0de8d
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   scan: DELIVERED (Executor transaction confirmed) dst tx b007d84f0a6969dc28c6cda190d8dfe007836822faf19bd1cb316ef8ffa0de8d
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m delivered on Stellar in b007d84f0a6969dc28c6cda190d8dfe007836822faf19bd1cb316ef8ffa0de8d; guid 0x6491fa05649e4cfe5e149c58a9bccdad02192e9784f483c46e672d09f9d313f2
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m   compose still queued on the endpoint; waiting for the executor…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m executing lz_compose ourselves with payload 0x000000000000000300009d2700000000000000000000000002faf080000000000000000000000000a7f6e56fa9fd580e51a8e48514d1001b44dbac85636f6d706f73652066726f6d20417262697472756d205365706f6c6961204020323032362d31302d30375431343a3334
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m lz_compose tx 9eca85dab68ccb253a7dbc50615deb6d38cf62240bba94c0b1d14f787da88a94
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m vault balance for 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85: 30000000 -> 80000000 (+50000000); deposits 3; latest note "compose from Arbitrum Sepolia @ 2026-10-07T14:34"
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m withdraw_digest 0x2800368334d0685811829864dea69d79d15e5c1791e4a0f452365fc1a3ec7eaf signed by 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85: 0x0fa9ab1fe3fd7aeeb4…
+[2026-10-07T14:39:19Z] [1;34m[deploy][0m withdraw tx 68867e778ba28265a7972e5777497452969a11ad9ad2d5489cffa979684e3387: GAD6SUCGUTTLNZC3KQZXCV5KRHKHZI3TZMNOQD6J3YWI3S46YMVSGKPA 9870000000 -> 9890000000 stroops; vault balance now 60000000, nonce 2
+# finished 2026-10-07T14:39:19Z exit 0
+ALL DONE (compose + postcard re-test) 2026-10-07T14:39:28Z

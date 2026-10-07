@@ -14,3 +14,6 @@ scripts/.state/
 
 # Field note raw video clips (large WebM); the stills are committed
 docs/field-note/clips/
+# Field note hand-in staging copies (renamed duplicates for the Drive upload)
+docs/field-note/handin/
+docs/field-note/card/card@2x.png

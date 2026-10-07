@@ -1,0 +1,36 @@
+# Run 2b: deliver the Sepolia -> Stellar testnet message from 11 Sep 2026 ourselves
+# started 2026-10-07T13:58:19Z
+[1;34m[deploy][0m source chain Sepolia
+/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/actions/public/getTransactionReceipt.ts:66
+  if (!receipt) throw new TransactionReceiptNotFoundError({ hash })
+                      ^
+
+TransactionReceiptNotFoundError: Transaction receipt with hash "0xae109dc791f88559d9ba6962919b8cd736fc35bdbfd4d46f138ababafc047c61" could not be found. The Transaction may not be processed on a block yet.
+
+Version: viem@2.56.3
+    at getTransactionReceipt (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/actions/public/getTransactionReceipt.ts:66:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async findPacketSentEvm (/Users/kaankacar/usdt0test/src/lib/stellar/deliver.ts:23:19)
+    at async <anonymous> (/Users/kaankacar/usdt0test/scripts/execute-stellar.ts:26:16) {
+  details: undefined,
+  docsPath: undefined,
+  metaMessages: undefined,
+  shortMessage: 'Transaction receipt with hash "0xae109dc791f88559d9ba6962919b8cd736fc35bdbfd4d46f138ababafc047c61" could not be found. The Transaction may not be processed on a block yet.',
+  version: '2.56.3'
+}
+
+Node.js v24.15.0
+# exit 1 at 2026-10-07T13:58:21Z
+# retry 2026-10-07T14:07:04Z with EVM_RPC_URL=https://sepolia.gateway.tenderly.co (publicnode and 1rpc returned null for the 11 Sep receipt; drpc wants a paid plan; blockpi/omniatech/blast are gone)
+[1;34m[deploy][0m source chain Sepolia
+[1;34m[deploy][0m guid 0x2a4ca88f8fdc264ac1c1b382acc4fb7e10077b186e7465e37e28dbf57dd3d234 nonce 1 -> CB4M3EC45CYVUYHRUY6T3UYBCM3E5JVA7SQF5OTIQY2IR3KHL3RT42GE
+[1;34m[deploy][0m endpoint state: NotVerified
+[1;34m[deploy][0m uln.verifiable = true
+[1;34m[deploy][0m commit_verification tx 9b966203ad16c525b4bc72e7f3259ef64fdecbdf69be961c36d12e957f24339b
+[1;34m[deploy][0m endpoint state: Verified
+[1;34m[deploy][0m lz_receive tx 3afb9a4fb941a41368bdd4d176b92966a7d55369694c43d5aec4bf9cab80ec56 -> https://testnet.layerzeroscan.com/tx/0x2a4ca88f8fdc264ac1c1b382acc4fb7e10077b186e7465e37e28dbf57dd3d234
+# exit  at 2026-10-07T14:07:17Z
+# verification 2026-10-07T14:08:34Z
+scan status: DELIVERED - Executor transaction confirmed | destination: SUCCEEDED 3afb9a4fb941a41368bdd4d176b92966a7d55369694c43d5aec4bf9cab80ec56
+sent 2026-09-11T14:26Z, DVN attested 2026-10-06T22:36Z, delivered by us 2026-10-07T14:07Z: 25 days 8 hours at the DVN, then 15 hours waiting for an executor that never came
+tUSDT0 balance of the Stellar deployer (recipient) via Horizon: ['997.0000000']

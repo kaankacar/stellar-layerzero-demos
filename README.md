@@ -122,6 +122,10 @@ The mock mirrors USDT0's admin model on purpose: issuer locked, SAC admin = SAC-
 
 https://kaankacar.github.io/stellar-layerzero-demos/ (GitHub Pages, built by `.github/workflows/pages.yml` on every push to `main`). Deep links return the SPA through `404.html`, so the HTTP status is 404 while the page renders normally.
 
+## Field note
+
+[docs/field-note/](docs/field-note/) holds the DR-3 Field Note written after building all of this: the writeup ([USDT0-field-note.md](docs/field-note/USDT0-field-note.md)), the partner-facing [friction log](docs/field-note/friction-log.md), the timestamped [run logs](docs/field-note/runs/) including one real USDT0 round trip on mainnet, the cover card and the screenshots. `scripts/fieldnote/` has the scripts those runs used.
+
 ## Known caveats
 
 - **Testnet redeploy risk.** The Stellar testnet endpoint was redeployed in August 2026. Every testnet address in the original brief for this project was stale: endpoint `CBQOTWFU…` is now `CALTBA5S…`, ULN `CAWCTJDD…` is now `CCMLPCAW…`, executor `CD26IUC2…` is now `CCAVZ7ES…`, and so on (`BRIEF_STALE_TESTNET` in `src/config/layerzero.fallback.ts` keeps the old generation). At one point two contracts claimed EID 40600 and only one was in the registry. Always resolve addresses from the registry; the Playground's health check compares the deployed OFT's `endpoint()` with the registry before letting you send.

@@ -1,0 +1,310 @@
+# Run 2a: pnpm e2e:testnet (tUSDT0 Stellar -> Arbitrum Sepolia, then a postcard), started 2026-10-07T14:09:20Z
+[2026-10-07T14:12:12Z] $ tsx --tsconfig tsconfig.node.json scripts/e2e-testnet-send.ts
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m tUSDT0 balance: 9970000000 stroops
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m quote_oft: sent 100000000 received 100000000; quote_send: 6356111 stroops
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m OFT send tx 18accded947dacadbb86c2435c7dd06a03e132c9067da3d7d5c36aedf7fb3598 -> https://testnet.layerzeroscan.com/tx/18accded947dacadbb86c2435c7dd06a03e132c9067da3d7d5c36aedf7fb3598
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   guid 0xce9d376f445e5061eb760acc7d981935f9067a161e60592d98f70f406ee572a4 (nonce 1, 40600 -> 40231) -> https://testnet.layerzeroscan.com/tx/0xce9d376f445e5061eb760acc7d981935f9067a161e60592d98f70f406ee572a4
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: not indexed yet
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: INFLIGHT (Ready for DVNs to verify)
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: INFLIGHT (Ready for committer to commit verification)
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: INFLIGHT (Verification committed)
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: DELIVERED (Executor transaction confirmed) dst tx 0x5a615f13e3b2b4ba43cc96c65223a6a4a4f0188a229d3a49433e147f3761273f
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m OFT message: DELIVERED
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m EVM tUSDT0 balance now 1005000000 (6 decimals)
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m postcard tx 2fd4ec21e6858c1ed6d34c69e683cbc1ce61b8dddcc8e85e2d1fe6478e4d7c73 -> https://testnet.layerzeroscan.com/tx/2fd4ec21e6858c1ed6d34c69e683cbc1ce61b8dddcc8e85e2d1fe6478e4d7c73
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   guid 0x835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead391 (nonce 1, 40600 -> 40231) -> https://testnet.layerzeroscan.com/tx/0x835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead391
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: not indexed yet
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: INFLIGHT (Ready for DVNs to verify)
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: INFLIGHT (Verification committed)
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m   scan: FAILED (Executor transaction simulation reverted)
+[2026-10-07T14:12:12Z] [1;34m[deploy][0m postcard message: FAILED
+[2026-10-07T14:12:12Z] [ELIFECYCLE] Command failed with exit code 1.
+# finished 2026-10-07T14:12:12Z exit 1
+# postcard self-delivery attempt 2026-10-07T14:15:04Z: Scan says the executor's simulation reverted with empty data
+[1;34m[deploy][0m guid 0x835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead391 nonce 1 -> receiver 0xf06c1948d85e7539c6e4b424d620831581c908be on eid 40231
+[1;34m[deploy][0m destination chain Arbitrum Sepolia
+[1;34m[deploy][0m endpoint.executable = Executable
+/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/errors/getContractError.ts:82
+  return new ContractFunctionExecutionError(cause as BaseError, {
+         ^
+
+ContractFunctionExecutionError: The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.
+
+This error could arise when the account does not have enough funds to:
+ - pay for the total gas fee,
+ - pay for the value to send.
+ 
+The cost of the transaction is calculated as `gas * gas fee + value`, where:
+ - `gas` is the amount of gas needed for transaction to execute,
+ - `gas fee` is the gas fee,
+ - `value` is the amount of ether to send to the recipient.
+ 
+Request Arguments:
+  chain:                 Arbitrum Sepolia (id: 421614)
+  from:                  0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85
+  to:                    0x6EDCE65403992e310A62460808c4b910D972f10f
+  data:                  0x0c0c389e0000000000000000000000000000000000000000000000000000000000009e988d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d723340000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f06c1948d85e7539c6e4b424d620831581c908be835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead39100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000002d68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  gas:                   400000
+  maxFeePerGas:          0.26832 gwei
+  maxPriorityFeePerGas:  0 gwei
+ 
+Contract Call:
+  address:   0x6EDCE65403992e310A62460808c4b910D972f10f
+  function:  lzReceive((uint32 srcEid, bytes32 sender, uint64 nonce), address _receiver, bytes32 _guid, bytes _message, bytes _extraData)
+  args:               ({"srcEid":40600,"sender":"0x8d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d72334","nonce":"1"}, 0xf06c1948d85e7539c6e4b424d620831581c908be, 0x835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead391, 0x68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130, 0x)
+  sender:    0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85
+
+Docs: https://viem.sh/docs/contract/writeContract
+Details: insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000
+Version: viem@2.56.3
+  cause: TransactionExecutionError: The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.
+  
+  This error could arise when the account does not have enough funds to:
+   - pay for the total gas fee,
+   - pay for the value to send.
+   
+  The cost of the transaction is calculated as `gas * gas fee + value`, where:
+   - `gas` is the amount of gas needed for transaction to execute,
+   - `gas fee` is the gas fee,
+   - `value` is the amount of ether to send to the recipient.
+   
+  Request Arguments:
+    chain:                 Arbitrum Sepolia (id: 421614)
+    from:                  0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85
+    to:                    0x6EDCE65403992e310A62460808c4b910D972f10f
+    data:                  0x0c0c389e0000000000000000000000000000000000000000000000000000000000009e988d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d723340000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f06c1948d85e7539c6e4b424d620831581c908be835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead39100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000002d68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    gas:                   400000
+    maxFeePerGas:          0.26832 gwei
+    maxPriorityFeePerGas:  0 gwei
+  
+  Details: insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000
+  Version: viem@2.56.3
+      at getTransactionError (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/errors/getTransactionError.ts:44:10)
+      at sendTransaction (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/actions/wallet/sendTransaction.ts:405:11)
+      ... 2 lines matching cause stack trace ...
+      at async <anonymous> (/Users/kaankacar/usdt0test/scripts/execute-sepolia.ts:58:13) {
+    cause: InsufficientFundsError: The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.
+    
+    This error could arise when the account does not have enough funds to:
+     - pay for the total gas fee,
+     - pay for the value to send.
+     
+    The cost of the transaction is calculated as `gas * gas fee + value`, where:
+     - `gas` is the amount of gas needed for transaction to execute,
+     - `gas fee` is the gas fee,
+     - `value` is the amount of ether to send to the recipient.
+    
+    Details: insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000
+    Version: viem@2.56.3
+        at getNodeError (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/errors/getNodeError.ts:103:12)
+        at <anonymous> (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/errors/getTransactionError.ts:37:19)
+        at getTransactionError (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/errors/getTransactionError.ts:43:5)
+        at sendTransaction (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/actions/wallet/sendTransaction.ts:405:11)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async writeContract.internal (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/actions/wallet/writeContract.ts:230:14)
+        at async <anonymous> (/Users/kaankacar/usdt0test/scripts/execute-sepolia.ts:58:13) {
+      details: 'insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000',
+      docsPath: undefined,
+      metaMessages: [
+        'This error could arise when the account does not have enough funds to:',
+        ' - pay for the total gas fee,',
+        ' - pay for the value to send.',
+        ' ',
+        'The cost of the transaction is calculated as `gas * gas fee + value`, where:',
+        ' - `gas` is the amount of gas needed for transaction to execute,',
+        ' - `gas fee` is the gas fee,',
+        ' - `value` is the amount of ether to send to the recipient.'
+      ],
+      shortMessage: 'The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.',
+      version: '2.56.3',
+      [cause]: InvalidInputRpcError: Missing or invalid parameters.
+      Double check you have provided the correct parameters.
+      
+      URL: https://arbitrum-sepolia-rpc.publicnode.com
+      Request body: {"method":"eth_sendRawTransaction","params":["0x02f901d083066eee0a80840ffe3d0083061a80946edce65403992e310a62460808c4b910d972f10f80b901640c0c389e0000000000000000000000000000000000000000000000000000000000009e988d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d723340000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f06c1948d85e7539c6e4b424d620831581c908be835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead39100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000002d68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c080a006b0aa179df1a809b128b121ca058f4e38570f9c251d840d11325aca3b19f2b2a07500e4582330964732b27fce4d7ce785bd61cd640cd5f6486580750eed460ca0"]}
+      
+      Details: insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000
+      Version: viem@2.56.3
+          at withRetry.delay.count.count (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/buildRequest.ts:189:25)
+          at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+          at async attemptRetry (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/promise/withRetry.ts:63:22) {
+        details: 'insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000',
+        docsPath: undefined,
+        metaMessages: [
+          'URL: https://arbitrum-sepolia-rpc.publicnode.com',
+          'Request body: {"method":"eth_sendRawTransaction","params":["0x02f901d083066eee0a80840ffe3d0083061a80946edce65403992e310a62460808c4b910d972f10f80b901640c0c389e0000000000000000000000000000000000000000000000000000000000009e988d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d723340000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f06c1948d85e7539c6e4b424d620831581c908be835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead39100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000002d68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c080a006b0aa179df1a809b128b121ca058f4e38570f9c251d840d11325aca3b19f2b2a07500e4582330964732b27fce4d7ce785bd61cd640cd5f6486580750eed460ca0"]}'
+        ],
+        shortMessage: 'Missing or invalid parameters.\n' +
+          'Double check you have provided the correct parameters.',
+        version: '2.56.3',
+        code: -32000,
+        [cause]: RpcRequestError: RPC Request failed.
+        
+        URL: https://arbitrum-sepolia-rpc.publicnode.com
+        Request body: {"method":"eth_sendRawTransaction","params":["0x02f901d083066eee0a80840ffe3d0083061a80946edce65403992e310a62460808c4b910d972f10f80b901640c0c389e0000000000000000000000000000000000000000000000000000000000009e988d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d723340000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f06c1948d85e7539c6e4b424d620831581c908be835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead39100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000002d68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c080a006b0aa179df1a809b128b121ca058f4e38570f9c251d840d11325aca3b19f2b2a07500e4582330964732b27fce4d7ce785bd61cd640cd5f6486580750eed460ca0"]}
+        
+        Details: insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000
+        Version: viem@2.56.3
+            at request (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/clients/transports/http.ts:177:19)
+            at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+            at async withRetry.delay.count.count (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/buildRequest.ts:163:22)
+            at async attemptRetry (/Users/kaankacar/usdt0test/node_modules/.pnpm/viem@2.56.3_bufferutil@4.1.0_typescript@5.9.3_utf-8-validate@6.0.6_zod@3.25.76/node_modules/viem/utils/promise/withRetry.ts:63:22) {
+          details: 'insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000',
+          docsPath: undefined,
+          metaMessages: [
+            'URL: https://arbitrum-sepolia-rpc.publicnode.com',
+            'Request body: {"method":"eth_sendRawTransaction","params":["0x02f901d083066eee0a80840ffe3d0083061a80946edce65403992e310a62460808c4b910d972f10f80b901640c0c389e0000000000000000000000000000000000000000000000000000000000009e988d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d723340000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f06c1948d85e7539c6e4b424d620831581c908be835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead39100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000002d68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c080a006b0aa179df1a809b128b121ca058f4e38570f9c251d840d11325aca3b19f2b2a07500e4582330964732b27fce4d7ce785bd61cd640cd5f6486580750eed460ca0"]}'
+          ],
+          shortMessage: 'RPC Request failed.',
+          version: '2.56.3',
+          code: -32000,
+          data: undefined,
+          url: 'https://arbitrum-sepolia-rpc.publicnode.com',
+          [cause]: {
+            code: -32000,
+            message: 'insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000'
+          }
+        }
+      }
+    },
+    details: 'insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000',
+    docsPath: undefined,
+    metaMessages: [
+      'This error could arise when the account does not have enough funds to:',
+      ' - pay for the total gas fee,',
+      ' - pay for the value to send.',
+      ' ',
+      'The cost of the transaction is calculated as `gas * gas fee + value`, where:',
+      ' - `gas` is the amount of gas needed for transaction to execute,',
+      ' - `gas fee` is the gas fee,',
+      ' - `value` is the amount of ether to send to the recipient.',
+      ' ',
+      'Request Arguments:',
+      '  chain:                 Arbitrum Sepolia (id: 421614)\n' +
+        '  from:                  0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85\n' +
+        '  to:                    0x6EDCE65403992e310A62460808c4b910D972f10f\n' +
+        '  data:                  0x0c0c389e0000000000000000000000000000000000000000000000000000000000009e988d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d723340000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f06c1948d85e7539c6e4b424d620831581c908be835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead39100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000002d68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n' +
+        '  gas:                   400000\n' +
+        '  maxFeePerGas:          0.26832 gwei\n' +
+        '  maxPriorityFeePerGas:  0 gwei'
+    ],
+    shortMessage: 'The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.',
+    version: '2.56.3'
+  },
+  details: 'insufficient funds for gas * price + value: address 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 have 1248767904000 want 107328000000000',
+  docsPath: '/docs/contract/writeContract',
+  metaMessages: [
+    'This error could arise when the account does not have enough funds to:',
+    ' - pay for the total gas fee,',
+    ' - pay for the value to send.',
+    ' ',
+    'The cost of the transaction is calculated as `gas * gas fee + value`, where:',
+    ' - `gas` is the amount of gas needed for transaction to execute,',
+    ' - `gas fee` is the gas fee,',
+    ' - `value` is the amount of ether to send to the recipient.',
+    ' ',
+    'Request Arguments:',
+    '  chain:                 Arbitrum Sepolia (id: 421614)\n' +
+      '  from:                  0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85\n' +
+      '  to:                    0x6EDCE65403992e310A62460808c4b910D972f10f\n' +
+      '  data:                  0x0c0c389e0000000000000000000000000000000000000000000000000000000000009e988d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d723340000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f06c1948d85e7539c6e4b424d620831581c908be835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead39100000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000002d68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n' +
+      '  gas:                   400000\n' +
+      '  maxFeePerGas:          0.26832 gwei\n' +
+      '  maxPriorityFeePerGas:  0 gwei',
+    ' ',
+    'Contract Call:',
+    '  address:   0x6EDCE65403992e310A62460808c4b910D972f10f\n' +
+      '  function:  lzReceive((uint32 srcEid, bytes32 sender, uint64 nonce), address _receiver, bytes32 _guid, bytes _message, bytes _extraData)\n' +
+      '  args:               ({"srcEid":40600,"sender":"0x8d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d72334","nonce":"1"}, 0xf06c1948d85e7539c6e4b424d620831581c908be, 0x835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead391, 0x68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130, 0x)\n' +
+      '  sender:    0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85'
+  ],
+  shortMessage: 'The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.',
+  version: '2.56.3',
+  abi: [
+    {
+      name: 'lzReceive',
+      type: 'function',
+      stateMutability: 'payable',
+      inputs: [
+        {
+          type: 'tuple',
+          name: '_origin',
+          components: [ [Object], [Object], [Object] ]
+        },
+        { type: 'address', name: '_receiver' },
+        { type: 'bytes32', name: '_guid' },
+        { type: 'bytes', name: '_message' },
+        { type: 'bytes', name: '_extraData' }
+      ],
+      outputs: []
+    },
+    {
+      name: 'inboundPayloadHash',
+      type: 'function',
+      stateMutability: 'view',
+      inputs: [
+        { type: 'address', name: '_receiver' },
+        { type: 'uint32', name: '_srcEid' },
+        { type: 'bytes32', name: '_sender' },
+        { type: 'uint64', name: '_nonce' }
+      ],
+      outputs: [ { type: 'bytes32' } ]
+    },
+    {
+      name: 'lazyInboundNonce',
+      type: 'function',
+      stateMutability: 'view',
+      inputs: [
+        { type: 'address', name: '_receiver' },
+        { type: 'uint32', name: '_srcEid' },
+        { type: 'bytes32', name: '_sender' }
+      ],
+      outputs: [ { type: 'uint64' } ]
+    },
+    {
+      name: 'inboundNonce',
+      type: 'function',
+      stateMutability: 'view',
+      inputs: [
+        { type: 'address', name: '_receiver' },
+        { type: 'uint32', name: '_srcEid' },
+        { type: 'bytes32', name: '_sender' }
+      ],
+      outputs: [ { type: 'uint64' } ]
+    }
+  ],
+  args: [
+    {
+      srcEid: 40600,
+      sender: '0x8d7868d49f15d170b93203bbf0fec96922c77a26e51dfa7f116a614a52d72334',
+      nonce: 1n
+    },
+    '0xf06c1948d85e7539c6e4b424d620831581c908be',
+    '0x835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead391',
+    '0x68656c6c6f2066726f6d205374656c6c617220746573746e6574204020323032362d31302d30375431343a3130',
+    '0x'
+  ],
+  contractAddress: '0x6EDCE65403992e310A62460808c4b910D972f10f',
+  formattedArgs: undefined,
+  functionName: 'lzReceive',
+  sender: '0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85'
+}
+
+Node.js v24.15.0
+# exit  at 2026-10-07T14:15:06Z
+# C10 fix 2026-10-07T14:25:15Z: raising the postcard's enforced lzReceive gas 200k -> 500k on Stellar testnet
+[1;34m[deploy][0m set_enforced_options on CCGXQ2GU… ok (tx ebf5750b2c…)
+[1;34m[deploy][0m 2026-10-07T14:25:23.506Z postcard CCGXQ2GUT4K5C4FZGIB3X4H6ZFUSFR32E3SR36T7CFVGCSSS24RTINWQ eid 40231: enforced options 0x00030100110100000000000000000000000000030d40 -> 0x0003010011010000000000000000000000000007a120 (tx ebf5750b2cb89646f053dabe330a040a2cb1c0168f1deb27d97e5b38306799db, SUCCESS)
+[1;34m[deploy][0m set_enforced_options on CCGXQ2GU… ok (tx f34dba1990…)
+[1;34m[deploy][0m 2026-10-07T14:25:27.773Z postcard CCGXQ2GUT4K5C4FZGIB3X4H6ZFUSFR32E3SR36T7CFVGCSSS24RTINWQ eid 40161: enforced options 0x00030100110100000000000000000000000000030d40 -> 0x0003010011010000000000000000000000000007a120 (tx f34dba1990defc1bb249b2f0883386a6aa9ef9a26b1ad583c4c5711d2f10a401, SUCCESS)
+# postcard investigation 2026-10-07T14:32:27Z: execute-sepolia.ts on the failed postcard tx now that the key has L2 gas
+[1;34m[deploy][0m guid 0x835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead391 nonce 1 -> receiver 0xf06c1948d85e7539c6e4b424d620831581c908be on eid 40231
+[1;34m[deploy][0m destination chain Arbitrum Sepolia
+[1;34m[deploy][0m endpoint.executable = Executable
+[1;34m[deploy][0m lzReceive tx 0x334aa96caa3d8978fd2079801db4475fea15ed5f6f32aad228673974b78b9bc3 (success) -> https://testnet.layerzeroscan.com/tx/0x835b623a4853f185be6fb8b4639fad7ff62b480fe1ed3c7ef127e6bcd0ead391
+# exit 0 at 2026-10-07T14:32:30Z
+# postcard re-test 2026-10-07T14:39:19Z: pnpm e2e:testnet --postcard with the 500k enforced gas, executor path
+[2026-10-07T14:39:28Z] $ tsx --tsconfig tsconfig.node.json scripts/e2e-testnet-send.ts --postcard
+[2026-10-07T14:39:28Z] [1;34m[deploy][0m postcard tx 7f6729e847d1ff3af5f8ec539bb2148a37881c17cadd164bcba98ddfbda6dd64 -> https://testnet.layerzeroscan.com/tx/7f6729e847d1ff3af5f8ec539bb2148a37881c17cadd164bcba98ddfbda6dd64
+# finished 2026-10-07T14:39:28Z exit 0
+# verification 2026-10-07T14:53:16Z: re-test postcard guid 0x9f22a9b3… sent 14:39:27Z with lzReceive gas 500000, DELIVERED by the executor at 14:40:09Z (Arbitrum Sepolia tx 0x0b434dc3…), PostcardOApp.received() = 2
