@@ -8,7 +8,7 @@
 
 - **Built by:** Kaan Kacar, Developer Relations, Stellar Development Foundation. GitHub [kaankacar](https://github.com/kaankacar). Live demo: https://kaankacar.github.io/stellar-layerzero-demos/
 - **Release:** USDT0 went live on Stellar mainnet on 2 September 2026 (Everdawn Labs operates USDT0; USDT is Tether's asset). Follow-up deep dive at the Stellar Developer Meeting of 1 October 2026 ([recording](https://www.youtube.com/watch?v=Zo8LK7puSTc)).
-- **Demo:** video `DR-3_usdt0-field-note_2026-10-07.mp4`; open source repo https://github.com/kaankacar/stellar-layerzero-demos (Apache-2.0).
+- **Demo:** video `DR-3_usdt0-field-note_2026-10-08.mp4`; open source repo https://github.com/kaankacar/stellar-layerzero-demos (Apache-2.0).
 - **Repos and packages used:**
   - `LayerZero-Labs/monorepo-external` at commit `b013ffef` (release 1.2.53): the Stellar OFT, SAC-manager, OApp and endpoint crates, vendored because they are not on crates.io. Our contracts (`postcard-oapp`, `composer-vault`, `faucet`) are new code on top of those crates.
   - `@layerzerolabs/oft-evm` 4.0.1 and `@layerzerolabs/oapp-evm` 0.4.1 with OpenZeppelin 5.6 for the EVM side (`TestOFT.sol`, `PostcardOApp.sol`), compiled with solc-js, no Foundry.
@@ -26,7 +26,7 @@ Around it sits a nine-page demo site that I needed anyway to understand what I w
 
 **Blockers, in order of pain.** (1) There is no USDT0 on testnet, so every rehearsal needs a mock. (2) In August the Stellar testnet LayerZero deployment could not send at all. (3) After the August redeploy, the default DVN configuration still broke out-of-the-box sends. (4) Inbound messages from Sepolia sat unverified for 25 days. (5) The crates are not published, so the build is a vendoring exercise. The full list is in the [friction log](friction-log.md), about 50 rows.
 
-**Time.** About six working days spread over nine weeks: a one-day dry run on 3 August that ended in "cannot send", the docs page on 25 August, the testnet fix on 4 September, two days building the site on 10 and 11 September, one day for Compose on 29 September, and the runs in this note on 7 October. Most of the calendar time was waiting for testnet infrastructure, not building.
+**Time.** About six working days spread over nine weeks: a one-day dry run on 3 August that ended in "cannot send", the docs page on 25 August, the testnet fix on 4 September, two days building the site on 10 and 11 September, one day for Compose on 29 September, and the runs in this note on 7 and 8 October. Most of the calendar time was waiting for testnet infrastructure, not building.
 
 ## 2. How it went
 
@@ -61,7 +61,7 @@ A few dollars, every step scripted in `scripts/fieldnote/run1-mainnet.ts`, every
 | Minted on Stellar | Commit at 13:18:42, executor delivered at 13:19:02 (block times from Scan). Balance 5.0000000 USDT0. | 13:19:02 (+16 min 27 s end to end) | [Stellar tx](https://stellar.expert/explorer/public/tx/14d4cca590cc4d40cfc0321d4d063b420c2e2be5b8e4bc27024262ced5bc8bfb) |
 | Quote the way back | `quote_oft(amount_ld 49999999)` returned `amount_sent_ld 49999990`: the ninth decimal digit I typed cannot travel, and 0.0000010 USDT0 stays in the account. `quote_send` to Ethereum: 6.4977 XLM (it was 11.95 XLM the day before and 3.55 XLM in September). | 13:24:04 | log |
 | Send from Stellar | `send` on the OFT with `to` = the EVM address left-padded to 32 bytes, fee paid in XLM. The first attempt was rejected `txTOO_LATE` with a 120 s time bound for no reason I could establish; the retry with 600 s succeeded in four seconds (F5). | 13:24:08 | [Stellar tx](https://stellar.expert/explorer/public/tx/6bc5348acd5dfa908c8d8ff8401d5cce5e659566b0f6707a84950b16ca7410e8), [Scan](https://layerzeroscan.com/tx/6bc5348acd5dfa908c8d8ff8401d5cce5e659566b0f6707a84950b16ca7410e8) |
-| Unlocked on Ethereum | USDT0 requires 320 Stellar confirmations toward Ethereum, about 27 minutes, then the executor on Ethereum. [[OUTBOUND PENDING]] | | |
+| Unlocked on Ethereum | USDT0 requires 320 Stellar confirmations toward Ethereum. The three DVNs attested between 13:50:59 and 13:51:11, and the executor unlocked 4.999999 USDT to the EVM key at 13:51:35. | 13:51:35 (+27 min 28 s end to end) | [Ethereum tx](https://etherscan.io/tx/0x5465624513297f21fe7e7ca427fc1a5ee89ed6d8ef4db7165e38cf747240b92b), [Scan](https://layerzeroscan.com/tx/6bc5348acd5dfa908c8d8ff8401d5cce5e659566b0f6707a84950b16ca7410e8) |
 
 Total spend for the round trip, excluding my duplicate swap: about 0.004 ETH for the XLM, 0.0025 ETH for the USDT, under 0.001 ETH of Ethereum gas, 0.0000103 ETH of LayerZero fee inbound, and 6.5 XLM of LayerZero fee outbound.
 
@@ -136,7 +136,7 @@ The ten that matter most. The full log, about 50 rows with status and owner, is 
 7. **The testnet endpoint was redeployed without notice.** Resolve addresses from the registry at runtime. (C4)
 8. **Scan indexes Stellar messages by GUID first.** A tx-hash lookup 404s for minutes while the message is already visible. (C8)
 9. **MetaMask on Arbitrum.** A reverting call shows as tens of thousands of ETH; the base fee drifts between estimate and submission. Simulate first, cap the fee at three times base. (D1, D2)
-10. **Fees move.** 3.55 XLM to Ethereum on 10 September, 11.95 XLM on 7 October. (E10)
+10. **Fees move.** 3.55 XLM to Ethereum on 10 September, 11.95 XLM on 7 October, 6.50 XLM on 8 October. (E10, E15)
 
 What I would tell the next builder in one line: *preflight the pathway before writing any code, and treat every address and number as live.*
 

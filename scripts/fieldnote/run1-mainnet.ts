@@ -181,7 +181,9 @@ async function send() {
 async function scanWait(txHash: string, label: string) {
   let last = '';
   for (let i = 0; i < 360; i++) {
-    const r = await fetch(`${SCAN}/messages/tx/${txHash}`);
+    // Scan's API refused a connection once mid-wait and the uncaught fetch error killed the poller; tolerate it.
+    const r = await fetch(`${SCAN}/messages/tx/${txHash}`).catch(() => null);
+    if (!r) { await sleep(10_000); continue; }
     if (r.ok) {
       const d = (await r.json()) as { data: { guid: string; status: { name: string; message?: string }; destination: { status: string; tx?: { txHash?: string } }; verification?: { dvn?: { status?: string } } }[] };
       const m = d.data?.[0];
