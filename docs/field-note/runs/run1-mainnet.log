@@ -1,2 +1,58 @@
 [2026-10-07T14:06:15.311Z] === step status ===
 [2026-10-07T14:06:15.963Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.015 USDT 0 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=false XLM 0 USDT0 (no trustline)
+[2026-10-08T12:54:42.360Z] === step status ===
+[2026-10-08T12:54:43.142Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.015 USDT 0 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=false XLM 0 USDT0 (no trustline)
+[2026-10-08T12:54:58.787Z] === step xlm ===
+[2026-10-08T12:54:59.500Z] xlm: asking 1Click for ETH -> XLM, 0.004 ETH, recipient GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L (account exists: false)
+[2026-10-08T12:55:00.582Z] xlm: quote 0.004 ETH -> 49.9652214 XLM, estimate 60s, deposit 0xAA40d32a638231e7257098f9Adc33D5b139298B9
+[2026-10-08T12:55:01.117Z] xlm: ETH deposit tx https://etherscan.io/tx/0x80f80f4b807c6c9915799c9c63b0946e24a276a922ab69bf0aceded2e898235d
+[2026-10-08T12:55:14.016Z] xlm: deposit/submit -> 201
+[2026-10-08T12:55:14.301Z] xlm: 1Click status PENDING_DEPOSIT
+[2026-10-08T12:56:26.192Z] xlm: 1Click status PROCESSING out 49.9539309
+[2026-10-08T12:57:58.455Z] xlm: 1Click status SUCCESS out 49.9539309
+[2026-10-08T12:57:58.456Z] xlm: destination tx [{"hash":"85edb38476c1b7fee0f0b40c3a10233fc242fd079a6e266a21990ce519fb9ee6","explorerUrl":""}]
+[2026-10-08T12:57:59.414Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.010990035772685 USDT 0 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=true XLM 50.9539309 USDT0 (no trustline)
+[2026-10-08T12:58:20.897Z] === step trustline ===
+[2026-10-08T12:58:28.786Z] trustline: changeTrust USDT0:GATISXX6BZ6NC7IKQBY37CJD4SOZL3CYZJWXEDG6JVIY4WBS6KXJHN6Q -> SUCCESS https://stellar.expert/explorer/public/tx/7af98747f152af5ab51fd8a523309a824f4432f451c4fc45a2d3612bf99d43d5
+[2026-10-08T12:58:29.414Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.010990035772685 USDT 0 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=true XLM 50.9539209 USDT0 0.0000000
+[2026-10-08T12:58:31.327Z] === step swap ===
+[2026-10-08T12:58:31.554Z] swap: QuoterV2 says 0.0025 ETH -> 6.324962 USDT on the 0.05% pool; min out 6.293337
+[2026-10-08T12:58:39.849Z] === step swap ===
+[2026-10-08T12:58:40.281Z] swap: QuoterV2 says 0.0025 ETH -> 6.327557 USDT on the 0.05% pool; min out 6.295919
+[2026-10-08T12:58:41.203Z] swap: SwapRouter02.exactInputSingle tx https://etherscan.io/tx/0x1d40c0e22cace50cb335fd515028acd59837a3cd862531b2ad4aca231a2d96da
+[2026-10-08T12:59:06.245Z] swap: success in block 26147834, gas used 137875
+[2026-10-08T12:59:07.077Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.00841540643117675 USDT 6.322048 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=true XLM 50.9539209 USDT0 0.0000000
+[2026-10-08T12:59:46.614Z] === step swap ===
+[2026-10-08T12:59:46.798Z] swap: QuoterV2 says 0.0025 ETH -> 6.322001 USDT on the 0.05% pool; min out 6.29039
+[2026-10-08T12:59:47.408Z] swap: SwapRouter02.exactInputSingle tx https://etherscan.io/tx/0x8b8d0aad1f158ea38db30b5a30dbc728a6ba12d5cfe2e8dab8d873abc8c09710
+[2026-10-08T13:00:41.323Z] swap: success in block 26147842, gas used 120749
+[2026-10-08T13:00:42.176Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.005847414076968592 USDT 12.646274 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=true XLM 50.9539209 USDT0 0.0000000
+[2026-10-08T13:01:10.619Z] === step send ===
+[2026-10-08T13:01:11.763Z] send: USDT allowance for the adapter is 0
+[2026-10-08T13:01:25.064Z] send: USDT approve(0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee, 5) success https://etherscan.io/tx/0x43de4ab6d8f26d74d9cb81b285350b9f2695f1f7b7dd4e002de412adef15ae21
+[2026-10-08T13:01:25.177Z] send: quoteOFT amountSentLD 5000000 amountReceivedLD 5000000 fees []
+[2026-10-08T13:01:25.319Z] send: quoteSend nativeFee 0.000010320266805256 ETH (lzToken 0)
+[2026-10-08T13:01:26.141Z] send: adapter.send(dstEid 30600, to 0x7bc55256d39dd4636bba4c88f790e65068321e2a09f8648d1144bd93a6c5c0a8, 5 USDT) tx https://etherscan.io/tx/0x3fcb30ce4f0ced62ba5c3f73a8a38efb969dd4aefb74bf7727c91d4ab603e304 -> https://layerzeroscan.com/tx/0x3fcb30ce4f0ced62ba5c3f73a8a38efb969dd4aefb74bf7727c91d4ab603e304
+[2026-10-08T13:02:40.615Z] send: success in block 26147852, gas used 322959
+[2026-10-08T13:02:41.406Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.005615691091644792 USDT 7.646274 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=true XLM 50.9539209 USDT0 0.0000000
+[2026-10-08T13:03:15.000Z] note: the swap step ran three times: the first attempt (12:58:31) failed in simulateContract because the fee cap was passed into eth_call (same bug as D6, now fixed in the script), a diagnostic re-run at 12:58:39 succeeded, and the patched re-run at 12:59:46 swapped again. Two swaps, 12.65 USDT total; 5 USDT go to Stellar, the remaining 7.65 USDT and the leftover ETH are swept back to Kaan at the end.
+[2026-10-08T13:03:16.767Z] === step wait-in ===
+[2026-10-08T13:03:17.336Z] wait-in: guid 0x289e896e97dff3091364e3c4030a8a3e28c038c38a71233440df98260654bfac INFLIGHT (Source transaction sent) dvn=WAITING dst=WAITING
+[2026-10-08T13:16:00.005Z] wait-in: guid 0x289e896e97dff3091364e3c4030a8a3e28c038c38a71233440df98260654bfac INFLIGHT (Ready for DVNs to verify) dvn=WAITING dst=WAITING
+[2026-10-08T13:19:05.012Z] wait-in: guid 0x289e896e97dff3091364e3c4030a8a3e28c038c38a71233440df98260654bfac INFLIGHT (Ready for committer to commit verification) dvn=SUCCEEDED dst=WAITING
+[2026-10-08T13:19:25.818Z] wait-in: guid 0x289e896e97dff3091364e3c4030a8a3e28c038c38a71233440df98260654bfac INFLIGHT (Verification committed) dvn=SUCCEEDED dst=WAITING
+[2026-10-08T13:19:36.281Z] wait-in: guid 0x289e896e97dff3091364e3c4030a8a3e28c038c38a71233440df98260654bfac CONFIRMING (Executor waiting for finality) dvn=SUCCEEDED dst=VALIDATING_TX
+[2026-10-08T13:19:46.763Z] wait-in: guid 0x289e896e97dff3091364e3c4030a8a3e28c038c38a71233440df98260654bfac DELIVERED (Executor transaction confirmed) dvn=SUCCEEDED dst=SUCCEEDED
+[2026-10-08T13:19:46.765Z] wait-in: delivered, destination tx 14d4cca590cc4d40cfc0321d4d063b420c2e2be5b8e4bc27024262ced5bc8bfb
+[2026-10-08T13:19:47.702Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.005615691091644792 USDT 7.646274 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=true XLM 50.9539209 USDT0 5.0000000
+[2026-10-08T13:19:57.877Z] === step return ===
+[2026-10-08T13:19:58.913Z] return: quote_oft(amount_ld 49999999) -> amount_sent_ld 49999990 amount_received_ld 49999990; dust left behind 9 stroops; fees []
+[2026-10-08T13:19:59.289Z] return: quote_send -> native_fee 64977014 stroops (6.4977014 XLM) to Ethereum
+[2026-10-08T13:24:01.000Z] note: the first return attempt (13:19:57) was rejected with txTOO_LATE (result XDR AAAAAAABWW/////9AAAAAA==): the quotes took one second, so the 120 s time bound expired during RPC submission; retrying with a 600 s window.
+[2026-10-08T13:24:03.599Z] === step return ===
+[2026-10-08T13:24:04.600Z] return: quote_oft(amount_ld 49999999) -> amount_sent_ld 49999990 amount_received_ld 49999990; dust left behind 9 stroops; fees []
+[2026-10-08T13:24:04.908Z] return: quote_send -> native_fee 64977014 stroops (6.4977014 XLM) to Ethereum
+[2026-10-08T13:24:08.985Z] return: OFT.send SUCCESS https://stellar.expert/explorer/public/tx/6bc5348acd5dfa908c8d8ff8401d5cce5e659566b0f6707a84950b16ca7410e8 -> https://layerzeroscan.com/tx/6bc5348acd5dfa908c8d8ff8401d5cce5e659566b0f6707a84950b16ca7410e8
+[2026-10-08T13:24:09.609Z] status: EVM 0xa7f6E56fa9FD580E51a8E48514d1001b44DBAc85 ETH 0.005615691091644792 USDT 7.646274 | Stellar GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L exists=true XLM 50.9539209 USDT0 5.0000000
+[2026-10-08T13:25:00.835Z] === step wait-out ===
+[2026-10-08T13:25:01.456Z] wait-out: guid 0x56766c0a25d19e043c997a5cff325b1c3ebf7d46076fdabbf2ecd8abfb8c1221 INFLIGHT (Source transaction sent) dvn=WAITING dst=WAITING

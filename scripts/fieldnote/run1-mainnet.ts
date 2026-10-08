@@ -28,7 +28,9 @@ import { STELLAR } from '../../src/config/networks';
 import { evmFeeOverrides, evmQuoteOft, evmQuoteSend, evmSend } from '../../src/lib/evm/oft';
 import { evmAddressToBytes32 } from '../../src/lib/hex';
 import { prepareChangeTrust } from '../../src/lib/stellar/classic';
-import { quoteOft, quoteSend, prepareOftSend } from '../../src/lib/stellar/oft';
+import { quoteOft, quoteSend, sendParamScVal, messagingFeeScVal } from '../../src/lib/stellar/oft';
+import { prepareInvoke } from '../../src/lib/stellar/tx';
+import { sc } from '../../src/lib/stellar/scval';
 import { getTokenBalance } from '../../src/lib/stellar/sac';
 import { stellarAddressToHex } from '../../src/lib/stellar/strkey';
 import { submitAndPoll } from '../../src/lib/stellar/tx';
@@ -135,9 +137,9 @@ async function swap() {
   const [out] = await pub.readContract({ address: QUOTER_V2, abi: QUOTER_ABI, functionName: 'quoteExactInputSingle', args: [{ tokenIn: WETH, tokenOut: USDT, amountIn, fee: POOL_FEE, sqrtPriceLimitX96: 0n }] });
   const minOut = (out * 995n) / 1000n;
   note(`swap: QuoterV2 says ${formatEther(amountIn)} ETH -> ${formatUnits(out, 6)} USDT on the 0.05% pool; min out ${formatUnits(minOut, 6)}`);
-  const fees = await evmFeeOverrides(wallet);
-  const { request } = await pub.simulateContract({ address: SWAP_ROUTER_02, abi: ROUTER_ABI, functionName: 'exactInputSingle', args: [{ tokenIn: WETH, tokenOut: USDT, fee: POOL_FEE, recipient: evmAccount.address, amountIn, amountOutMinimum: minOut, sqrtPriceLimitX96: 0n }], value: amountIn, account: evmAccount, ...fees });
-  const hash = await wallet.writeContract(request);
+  // No fee fields in the simulation: with maxFeePerGas and no gas limit, eth_call checks the balance against the node's gas cap.
+  const { request } = await pub.simulateContract({ address: SWAP_ROUTER_02, abi: ROUTER_ABI, functionName: 'exactInputSingle', args: [{ tokenIn: WETH, tokenOut: USDT, fee: POOL_FEE, recipient: evmAccount.address, amountIn, amountOutMinimum: minOut, sqrtPriceLimitX96: 0n }], value: amountIn, account: evmAccount });
+  const hash = await wallet.writeContract({ ...request, ...(await evmFeeOverrides(wallet)) } as typeof request);
   note(`swap: SwapRouter02.exactInputSingle tx https://etherscan.io/tx/${hash}`);
   const rc = await pub.waitForTransactionReceipt({ hash });
   note(`swap: ${rc.status} in block ${rc.blockNumber}, gas used ${rc.gasUsed}`);
@@ -215,7 +217,8 @@ async function returnLeg() {
   const param = { ...discover, minAmountLd: q.value.receipt.amountReceivedLd };
   const fee = await quoteSend('mainnet', USDT0.oft, G, param);
   note(`return: quote_send -> native_fee ${fee.value.nativeFee} stroops (${Number(fee.value.nativeFee) / 1e7} XLM) to Ethereum`);
-  const prepared = await prepareOftSend('mainnet', USDT0.oft, G, param, fee.value);
+  // A 10-minute window: the first attempt expired (txTOO_LATE) while the RPC failover was still timing out.
+  const prepared = await prepareInvoke('mainnet', G, USDT0.oft, 'send', [sc.address(G), sendParamScVal(param), messagingFeeScVal(fee.value), sc.address(G)], { timeoutSeconds: 600 });
   prepared.tx.sign(stellarKp);
   const r = await submitAndPoll('mainnet', prepared.tx.toXDR());
   note(`return: OFT.send ${r.status} https://stellar.expert/explorer/public/tx/${r.hash} -> https://layerzeroscan.com/tx/${r.hash}`);

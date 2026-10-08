@@ -35,6 +35,10 @@ const NAV_TIMEOUT = 60_000;
 const TEXT_TIMEOUT = 60_000;
 const HEADER_OFFSET = 80; // the site header is sticky; keep scrolled targets below it
 
+const RUN1_LOG = resolve(HERE, 'runs/run1-mainnet.log');
+const MAINNET_INBOUND_GUID = '0x289e896e97dff3091364e3c4030a8a3e28c038c38a71233440df98260654bfac';
+const MAINNET_OUTBOUND_TX = '6bc5348acd5dfa908c8d8ff8401d5cce5e659566b0f6707a84950b16ca7410e8';
+const FIELDNOTE_ACCOUNT = 'GB54KUSW2OO5IY3LXJGIR54Q4ZIGQMQ6FIE7QZENCFCL3E5GYXAKQY7L';
 const RECON_LOG = resolve(HERE, 'runs/run0-recon.log');
 const FRESH_CLONE_LOG =
   process.env.FRESH_CLONE_LOG ?? '/private/tmp/claude-501/-Users-kaankacar-usdt0test/7628fd76-75f7-4a0f-80f8-ad638349e45e/scratchpad/run2/run2-fresh-clone.log';
@@ -222,6 +226,36 @@ async function record(page, file, fn) {
 // Shots. Each `run(page)` returns a note; a note starting with "WARN" marks a
 // partial render (the file is still written).
 
+/** A still made from the mainnet run log: the lines matching `filter`, rendered as a terminal. */
+function logStill(name, title, filter, highlight) {
+  return {
+    name,
+    file: stillPath(name),
+    async run(page) {
+      const lines = readLines(RUN1_LOG).filter((l) => filter.test(l)).map((l) => l.replace(/^\[(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)\.\d+Z\]/, '[$1Z]'));
+      const html = terminalHtml(lines, { title, highlight });
+      await page.setContent(html, { waitUntil: 'load' });
+      const px = await fitTerminal(page);
+      await page.screenshot({ path: this.file });
+      return `${lines.length} lines at ${px}px`;
+    },
+  };
+}
+/** A still of a live page: open, wait for `text`, screenshot. */
+function pageStill(name, url, text, scrollTo) {
+  return {
+    name,
+    file: stillPath(name),
+    async run(page) {
+      const nav = await open(page, url);
+      const ok = await waitForText(page, text);
+      if (scrollTo) await scrollToText(page, scrollTo);
+      await page.screenshot({ path: this.file });
+      return ok ? nav : `WARN: ${text} not shown within ${TEXT_TIMEOUT / 1000} s ${nav}`;
+    },
+  };
+}
+
 const stills = [
   {
     name: '01-recon',
@@ -235,6 +269,13 @@ const stills = [
       return `${lines.length} lines at ${px}px`;
     },
   },
+  logStill('02-trustline', '$ run1-mainnet.ts xlm; run1-mainnet.ts trustline   # fund a fresh mainnet account from ETH, add the USDT0 trustline', /step xlm|xlm:|step trustline|trustline:/, /exists=true|SUCCESS/),
+  logStill('03-eth-send', '$ run1-mainnet.ts swap; run1-mainnet.ts send   # ETH -> USDT on Uniswap, approve, quoteOFT, quoteSend, adapter.send to Stellar', /step swap|swap: (QuoterV2|SwapRouter02|success)|step send|send:/, /adapter\.send|quoteSend/),
+  pageStill('04-scan-inbound', `${BASE}/tracker?env=mainnet&q=${MAINNET_INBOUND_GUID}`, DELIVERED, 'Results for'),
+  pageStill('05-stellar-balance', `https://stellar.expert/explorer/public/account/${FIELDNOTE_ACCOUNT}`, /USDT0/),
+  logStill('06-quote-dust', '$ run1-mainnet.ts return   # quote_oft shows the dust, quote_send prices the message in XLM', /step return|return:/, /amount_sent_ld|native_fee/),
+  pageStill('07-stellar-send', `https://stellar.expert/explorer/public/tx/${MAINNET_OUTBOUND_TX}`, /send/i),
+  pageStill('08-scan-outbound', `${BASE}/tracker?env=mainnet&q=${MAINNET_OUTBOUND_TX}`, DELIVERED, 'Results for'),
   {
     name: '09-fresh-clone-build',
     file: stillPath('09-fresh-clone-build'),

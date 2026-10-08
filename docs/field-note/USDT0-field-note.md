@@ -49,13 +49,21 @@ Screenshot: `DR-3_usdt0-field-note_01-recon.png`.
 
 ### Run 1: one real round trip (mainnet, a few dollars)
 
-[[RUN1 PENDING: filled from runs/run1-mainnet.log once the steps complete. Planned shape below.]]
+A few dollars, every step scripted in `scripts/fieldnote/run1-mainnet.ts`, every step logged in [runs/run1-mainnet.log](runs/run1-mainnet.log). Done on 8 October 2026, all times UTC.
 
-1. **XLM for a fresh account.** The new account `GB54KUSW…` cannot receive anything until someone creates it. We funded it from ETH on Ethereum through NEAR Intents 1Click (no API key): 0.004 ETH quoted at 49.6 XLM. [[result, time, whether the account creation worked]]
-2. **Trustline** to `USDT0:GATISXX6…`. Without it the inbound message would land and the mint would fail.
-3. **ETH to USDT** on Uniswap V3 (`SwapRouter02`, 0.05% pool), 0.0025 ETH. [[tx]]
-4. **Approve and send on Ethereum.** The Ethereum side is an OFT *adapter* (`approvalRequired = true`): it locks canonical USDT. `quoteOFT` for 5 USDT returned 5 USDT received and no fee; `quoteSend` priced the message at 0.0000103 ETH. [[approve tx, send tx, Scan link, time to DELIVERED]]
-5. **Back to Ethereum from Stellar.** `quote_oft(49999999)` returned `amount_sent_ld 49999990`, so ten stroops stayed behind. `quote_send` priced the message at [[n]] XLM. [[tx, Scan link, time to DELIVERED, USDT unlocked on Ethereum]]
+| Step | What happened | Time | Evidence |
+|---|---|---|---|
+| XLM for a fresh account | The new account `GB54KUSW…` did not exist and could not receive anything. NEAR Intents 1Click, no API key, quoted 0.004 ETH for 49.95 XLM; it created the account itself and 50.95 XLM landed. | 12:55:01 to 12:57:58 | [ETH deposit](https://etherscan.io/tx/0x80f80f4b807c6c9915799c9c63b0946e24a276a922ab69bf0aceded2e898235d), [Stellar tx](https://stellar.expert/explorer/public/tx/85edb38476c1b7fee0f0b40c3a10233fc242fd079a6e266a21990ce519fb9ee6) |
+| Trustline | `changeTrust` to `USDT0:GATISXX6…`. Without it the inbound mint fails. | 12:58:28 | [tx](https://stellar.expert/explorer/public/tx/7af98747f152af5ab51fd8a523309a824f4432f451c4fc45a2d3612bf99d43d5) |
+| ETH to USDT | Uniswap V3 `SwapRouter02`, 0.05% pool, 0.0025 ETH for 6.32 USDT. Ran twice by my mistake (see the log), so the key held 12.65 USDT. | 12:58:41, 12:59:47 | [swap](https://etherscan.io/tx/0x8b8d0aad1f158ea38db30b5a30dbc728a6ba12d5cfe2e8dab8d873abc8c09710) |
+| Approve and send on Ethereum | The Ethereum side is an OFT *adapter* (`approvalRequired = true`): it locks canonical USDT. `quoteOFT` for 5 USDT: 5 received, no fee. `quoteSend`: 0.0000103 ETH. `send` with `to` = the raw ed25519 key of the G address. 323k gas. | 13:02:35 (block) | [approve](https://etherscan.io/tx/0x43de4ab6d8f26d74d9cb81b285350b9f2695f1f7b7dd4e002de412adef15ae21), [send](https://etherscan.io/tx/0x3fcb30ce4f0ced62ba5c3f73a8a38efb969dd4aefb74bf7727c91d4ab603e304), [Scan](https://layerzeroscan.com/tx/0x3fcb30ce4f0ced62ba5c3f73a8a38efb969dd4aefb74bf7727c91d4ab603e304) |
+| Three DVNs attest on Stellar | LayerZero Labs at 13:15:52, Canary at 13:15:57, USDT0's own DVN at 13:18:32, after 65 Ethereum confirmations. | +13 to +16 min | Scan |
+| Minted on Stellar | Commit at 13:18:42, executor delivered at 13:19:02 (block times from Scan). Balance 5.0000000 USDT0. | 13:19:02 (+16 min 27 s end to end) | [Stellar tx](https://stellar.expert/explorer/public/tx/14d4cca590cc4d40cfc0321d4d063b420c2e2be5b8e4bc27024262ced5bc8bfb) |
+| Quote the way back | `quote_oft(amount_ld 49999999)` returned `amount_sent_ld 49999990`: the ninth decimal digit I typed cannot travel, and 0.0000010 USDT0 stays in the account. `quote_send` to Ethereum: 6.4977 XLM (it was 11.95 XLM the day before and 3.55 XLM in September). | 13:24:04 | log |
+| Send from Stellar | `send` on the OFT with `to` = the EVM address left-padded to 32 bytes, fee paid in XLM. The first attempt was rejected `txTOO_LATE` with a 120 s time bound for no reason I could establish; the retry with 600 s succeeded in four seconds (F5). | 13:24:08 | [Stellar tx](https://stellar.expert/explorer/public/tx/6bc5348acd5dfa908c8d8ff8401d5cce5e659566b0f6707a84950b16ca7410e8), [Scan](https://layerzeroscan.com/tx/6bc5348acd5dfa908c8d8ff8401d5cce5e659566b0f6707a84950b16ca7410e8) |
+| Unlocked on Ethereum | USDT0 requires 320 Stellar confirmations toward Ethereum, about 27 minutes, then the executor on Ethereum. [[OUTBOUND PENDING]] | | |
+
+Total spend for the round trip, excluding my duplicate swap: about 0.004 ETH for the XLM, 0.0025 ETH for the USDT, under 0.001 ETH of Ethereum gas, 0.0000103 ETH of LayerZero fee inbound, and 6.5 XLM of LayerZero fee outbound.
 
 Screenshots: `02-trustline`, `03-eth-send`, `04-scan-inbound`, `05-stellar-balance`, `06-quote-dust`, `07-stellar-send`, `08-scan-outbound`.
 
