@@ -8,7 +8,7 @@
 
 - **Built by:** Kaan Kacar, Developer Relations, Stellar Development Foundation. GitHub [kaankacar](https://github.com/kaankacar). Live demo: https://kaankacar.github.io/stellar-layerzero-demos/
 - **Release:** USDT0 on Stellar, live on mainnet since 2 September 2026. [Announcement](https://developers.stellar.org/launch/usdt0). Everdawn Labs builds and operates USDT0. USDT itself is Tether's asset. My deep dive at the Stellar Developer Meeting of 1 October: [recording](https://www.youtube.com/watch?v=Zo8LK7puSTc).
-- **Demo:** video `DR-3_usdt0-field-note_2026-10-08.mp4`, repo https://github.com/kaankacar/stellar-layerzero-demos (Apache-2.0).
+- **Demo:** the live walkthrough of every page in the 1 October Developer Meeting, [from 25:49 in the recording](https://www.youtube.com/watch?v=Zo8LK7puSTc&t=1549s); the same segment is in the DevRel Drive folder as `DR-3_usdt0-field-note_2026-10-01.mp4`. Repo: https://github.com/kaankacar/stellar-layerzero-demos (Apache-2.0).
 - **Repos and packages I used:**
   - `LayerZero-Labs/monorepo-external` at commit `b013ffef` (release 1.2.53). These are the Stellar OFT, SAC-manager, OApp and endpoint crates. They are not on crates.io, so I vendored them. My contracts (`postcard-oapp`, `composer-vault`, `faucet`) are new code on top.
   - `@layerzerolabs/oft-evm` 4.0.1, `@layerzerolabs/oapp-evm` 0.4.1 and OpenZeppelin 5.6 for the EVM side, compiled with solc-js.
@@ -28,14 +28,13 @@ Around it I built a nine-page demo site, because I needed it to understand what 
 
 **Blockers, worst first.**
 1. There is no USDT0 on testnet. Every rehearsal needs a mock.
-2. In August the Stellar testnet LayerZero deployment could not send at all.
-3. After the August redeploy, the default DVN configuration still broke out-of-the-box sends.
-4. Inbound messages from Sepolia sat unverified for 25 days.
-5. The crates are not published. The build is a vendoring exercise.
+2. The testnet's default DVN configuration broke out-of-the-box sends.
+3. Inbound messages from Sepolia sat unverified for 25 days.
+4. The crates are not published. The build is a vendoring exercise.
 
-The full list is the [friction log](friction-log.md), 57 rows.
+The full list is the [friction log](friction-log.md), 53 rows, each with the fix or workaround.
 
-**Time.** About six working days over nine weeks. A one-day dry run on 3 August that ended in "cannot send". The docs page on 25 August. The testnet fix on 4 September. Two days of site building on 10 and 11 September. One day for Compose on 29 September. The runs in this note on 7 and 8 October. Most of the calendar time was waiting for testnet infrastructure, not building.
+**Time.** About five working days over five weeks. The testnet configuration fix on 4 September. Two days of site building on 10 and 11 September. One day for Compose on 29 September. The runs in this note on 7 and 8 October. Most of the calendar time was waiting for testnet infrastructure, not building.
 
 ## 2. How it went
 
@@ -89,9 +88,9 @@ A clean clone on the same machine. Rust 1.90.0, pinned monorepo commit.
 
 The rebuilt wasm did not match the committed bytes. The manifest's sha256 values say what is deployed. The build is not reproducible yet. That is in the log as A5.
 
-Then the message I sent from Sepolia on 11 September. The Tracker screenshot from that day shows it stuck at "Ready for DVNs to verify". On 6 October at 22:36 UTC the LayerZero Labs testnet DVN attested it, 25 days and 8 hours later. No executor followed. On 7 October at 14:07 UTC I delivered it myself: `commit_verification` ([9b966203…](https://stellar.expert/explorer/testnet/tx/9b966203ad16c525b4bc72e7f3259ef64fdecbdf69be961c36d12e957f24339b)), then `lz_receive` ([3afb9a4f…](https://stellar.expert/explorer/testnet/tx/3afb9a4fb941a41368bdd4d176b92966a7d55369694c43d5aec4bf9cab80ec56)). 5 tUSDT0 landed. One detail cost ten minutes: no public Sepolia RPC still served the receipt of a 26-day-old transaction, except Tenderly's gateway (C9).
+Then the message I sent from Sepolia on 11 September. The Tracker screenshot from that day shows it stuck at "Ready for DVNs to verify". On 6 October at 22:36 UTC the LayerZero Labs testnet DVN attested it, 25 days and 8 hours later. No executor followed. On 7 October at 14:07 UTC I delivered it myself: `commit_verification` ([9b966203…](https://stellar.expert/explorer/testnet/tx/9b966203ad16c525b4bc72e7f3259ef64fdecbdf69be961c36d12e957f24339b)), then `lz_receive` ([3afb9a4f…](https://stellar.expert/explorer/testnet/tx/3afb9a4fb941a41368bdd4d176b92966a7d55369694c43d5aec4bf9cab80ec56)). 5 tUSDT0 landed. One detail cost ten minutes: no public Sepolia RPC still served the receipt of a 26-day-old transaction, except Tenderly's gateway (C7).
 
-The same afternoon `pnpm e2e:testnet` sent 10 tUSDT0 from Stellar to Arbitrum Sepolia. The real executor delivered it in under three minutes. The postcard after it failed at the executor's simulation with empty revert data. The cause was mine. The postcard's enforced `lzReceive` gas was 200k, copied from the OFT. A five-field struct with a string needs about 263k. I measured that when I delivered it by hand with a 400k limit. My only earlier postcard delivery had also been by hand, so the executor path had never been proven. Enforced gas is now 500k. The next postcard was delivered by the executor in 42 seconds (C10).
+The same afternoon `pnpm e2e:testnet` sent 10 tUSDT0 from Stellar to Arbitrum Sepolia. The real executor delivered it in under three minutes. The postcard after it failed at the executor's simulation with empty revert data. The cause was mine. The postcard's enforced `lzReceive` gas was 200k, copied from the OFT. A five-field struct with a string needs about 263k. I measured that when I delivered it by hand with a 400k limit. My only earlier postcard delivery had also been by hand, so the executor path had never been proven. Enforced gas is now 500k. The next postcard was delivered by the executor in 42 seconds (C8).
 
 Screenshots: `09-fresh-clone-build`, `10-reverse-delivered`.
 
@@ -134,18 +133,18 @@ Screenshots: `11-compose-deposit`, `12-compose-withdraw`.
 
 ## 4. Friction log
 
-The ten that matter most. The full log is [friction-log.md](friction-log.md): 57 rows with status, owner and evidence. It doubles as the feedback for LayerZero Labs and Everdawn Labs.
+The ten that matter most. The full log is [friction-log.md](friction-log.md): 53 rows, each with what I was doing, what went wrong, and the fix or workaround.
 
 1. **No USDT0 on testnet.** Mock it, label it, and do one small real transfer. (E1)
-2. **Testnet sends failed with `#1213 UnsupportedMessageLib` after a successful quote.** First because the DVN rejected the only registered library, in August. Then because the default configs still named a deprecated DVN, in September. Per-OApp `set_config` fixes the second. Only time fixed the first. (C1, C2)
-3. **The Sepolia to Stellar testnet DVN went quiet for 25 days.** Arbitrum Sepolia attests in seconds. (C6)
-4. **The testnet executor is slow or absent.** Deliver it yourself. (C7, D4)
-5. **A bare OApp must call `combine_options`.** Empty options reach ULN302 and fail with `#1114`. The OFT does it for you. Your own OApp does not. (B2)
+2. **Testnet sends failed with `#1213 UnsupportedMessageLib` after a successful quote.** The default configs still named a deprecated DVN. Per-OApp `set_config` fixes it. (C1)
+3. **The Sepolia to Stellar testnet DVN went quiet for 25 days.** Arbitrum Sepolia attests in seconds. (C4)
+4. **The testnet executor is slow or absent.** Deliver it yourself. (C5, D4)
+5. **A bare OApp must call `combine_options`.** Empty options reach ULN302 and fail with `#1114`. The OFT does it for you. Your own OApp does not. (B1)
 6. **The crates are not on crates.io and the build tool 404s on npm.** Vendor one canonical copy and pin `soroban-sdk-macros = "=25.1.1"`. (A1 to A3)
-7. **The testnet endpoint was redeployed without notice.** Resolve addresses from the registry at runtime. (C4)
-8. **Scan indexes Stellar messages by GUID first.** A tx-hash lookup returns 404 for minutes while the message is already visible. (C8)
+7. **Every testnet address in my brief was stale.** The endpoint had been redeployed. Resolve addresses from the registry at runtime. (C3)
+8. **Scan indexes Stellar messages by GUID first.** A tx-hash lookup returns 404 for minutes while the message is already visible. (C6)
 9. **MetaMask on Arbitrum.** A reverting call shows as tens of thousands of ETH. The base fee drifts between estimate and submission. Simulate first, cap the fee at three times base. (D1, D2)
-10. **Fees move.** 3.55 XLM to Ethereum on 10 September, 11.95 XLM on 7 October, 6.50 XLM on 8 October. (E10, E15)
+10. **Fees move.** 3.55 XLM to Ethereum on 10 September, 11.95 XLM on 7 October, 6.50 XLM on 8 October. (E10)
 
 One line for the next builder: *preflight the pathway before you write code, and treat every address and number as live.*
 
