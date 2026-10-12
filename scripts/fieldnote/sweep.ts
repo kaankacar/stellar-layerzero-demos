@@ -60,9 +60,13 @@ async function evm() {
   const block = await pub.getBlock();
   const maxFee = (block.baseFeePerGas ?? 0n) * 2n + 100_000_000n;
   const bal = await pub.getBalance({ address: account.address });
-  const value = bal - 21_000n * maxFee;
+  // The destination may be a contract wallet: a 21k-gas transfer to it reverted on 2026-10-12. Estimate, then add a margin.
+  const est = await pub.estimateGas({ account, to: KAAN, value: bal / 2n });
+  const gas = (est * 125n) / 100n;
+  const value = bal - gas * maxFee;
   if (value <= 0n) { note('sweep: nothing left to send after gas'); return; }
-  const h = await wallet.sendTransaction({ to: KAAN, value, gas: 21_000n, maxFeePerGas: maxFee, maxPriorityFeePerGas: 100_000_000n });
+  note(`sweep: final transfer needs about ${est} gas (limit ${gas}); sending ${formatEther(value)} ETH to ${KAAN}`);
+  const h = await wallet.sendTransaction({ to: KAAN, value, gas, maxFeePerGas: maxFee, maxPriorityFeePerGas: 100_000_000n });
   const r = await pub.waitForTransactionReceipt({ hash: h });
   note(`sweep: ${formatEther(value)} ETH returned, ${r.status} https://etherscan.io/tx/${h}; key now holds ${formatEther(await pub.getBalance({ address: account.address }))} ETH`);
 }
